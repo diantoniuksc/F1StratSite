@@ -1,0 +1,72 @@
+﻿@page "/prediction"
+@using F1StartegySite.MLModel
+@using System.ComponentModel.DataAnnotations
+
+<h3>Prediction</h3>
+
+<h4>Your pilot: @input.Driver_id</h4>
+
+<EditForm Model="@input" OnValidSubmit="HandleValidSubmit" FormName="PredictionForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Driver ID:</label>
+        <InputText @bind-Value="input!.Driver_id" />
+    </div>
+    <div>
+        <label>Race Length:</label>
+        <InputNumber @bind-Value="circut" TValue="float" />
+    </div>
+    <div>
+        <label>Year:</label>
+        <InputNumber @bind-Value="input!.Year" TValue="float" />
+    </div>
+    <div>
+        <label>Compound:</label>
+        <InputText @bind-Value="input!.Compound" />
+    </div>
+    <div>
+        <label>Stint Start Lap:</label>
+        <InputNumber @bind-Value="input!.Stint_start_lap" TValue="float" />
+    </div>
+
+    <button type="submit">Predict</button>
+</EditForm>
+
+@if (output != null)
+{
+        <h4>Prediction Result</h4>
+        <p>Input: @input!.Driver_id, @input!.Race_length, @input!.Year, @input!.Compound, @input!.Stint_start_lap</p>
+        <p>Predicted Tyre Life: <b>@output.Score</b></p>
+}
+
+@code {
+    private MLModel1.ModelInput? input;
+
+    private MLModel1.ModelOutput? output;
+
+    private string
+
+protected override void OnInitialized()
+{
+    if (input == null)
+    {
+        input = new MLModel1.ModelInput
+        {
+            Driver_id = "VER",
+            Race_length = 1,
+            Year = 2024,
+            Compound = "SOFT",
+            Stint_start_lap = 1
+        };
+    }
+}
+
+    private void HandleValidSubmit()
+    {
+        Console.WriteLine("Form Submitted!");
+        Console.WriteLine($"Driver: {input!.Driver_id}, Compound: {input!.Compound}, Race Length: {input!.Race_length}");
+        output = MLModel1.Predict(input!);
+    }
+}
