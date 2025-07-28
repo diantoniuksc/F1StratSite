@@ -1,6 +1,8 @@
 ﻿@page "/prediction"
 @using F1StartegySite.MLModel
 @using System.ComponentModel.DataAnnotations
+@using Data
+
 
 <h3>Prediction</h3>
 
@@ -15,8 +17,8 @@
         <InputText @bind-Value="input!.Driver_id" />
     </div>
     <div>
-        <label>Race Length:</label>
-        <InputNumber @bind-Value="circut" TValue="float" />
+        <label>Circut Name:</label>
+        <InputText @bind-Value="circut"/> Grand Prix
     </div>
     <div>
         <label>Year:</label>
@@ -36,9 +38,9 @@
 
 @if (output != null)
 {
-        <h4>Prediction Result</h4>
-        <p>Input: @input!.Driver_id, @input!.Race_length, @input!.Year, @input!.Compound, @input!.Stint_start_lap</p>
-        <p>Predicted Tyre Life: <b>@output.Score</b></p>
+    <h4>Prediction Result</h4>
+    <p>Input: @input!.Driver_id, @input!.Race_length, @input!.Year, @input!.Compound, @input!.Stint_start_lap</p>
+    <p>Predicted Tyre Life: <b>@output.Score</b></p>
 }
 
 @code {
@@ -46,27 +48,44 @@
 
     private MLModel1.ModelOutput? output;
 
-    private string
+    private string circut;
 
-protected override void OnInitialized()
-{
-    if (input == null)
+    protected override void OnInitialized()
     {
-        input = new MLModel1.ModelInput
+        if (input == null)
+        {
+            input = new MLModel1.ModelInput
         {
             Driver_id = "VER",
-            Race_length = 1,
+            Race_length = 7.004f,
             Year = 2024,
             Compound = "SOFT",
             Stint_start_lap = 1
         };
+        }
     }
-}
 
     private void HandleValidSubmit()
     {
         Console.WriteLine("Form Submitted!");
-        Console.WriteLine($"Driver: {input!.Driver_id}, Compound: {input!.Compound}, Race Length: {input!.Race_length}");
+
+        input!.Race_length = ConvertCircutNameToLength();
+
+        Console.WriteLine($"Driver: {input!.Driver_id}, Compound: {input!.Compound}, Circut: {circut}, Circut Length: {input.Race_length}");
         output = MLModel1.Predict(input!);
+    }
+
+    private float ConvertCircutNameToLength()
+    {
+        float circutLength; 
+
+        if(circut != null)
+        {
+            return CircutInfo.GetCircuitLength(circut, (int)input.Year);
+        }
+        else
+        {
+            return -1;
+        }
     }
 }
