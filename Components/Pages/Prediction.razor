@@ -23,7 +23,7 @@
     style='--select-button-svg: url(&apos;data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724px%27 height=%2724px%27 fill=%27rgb(164,170,178)%27 viewBox=%270 0 256 256%27%3e%3cpath d=%27M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z%27%3e%3c/path%3e%3c/svg%3e&apos;); font-family: "Space Grotesk", "Noto Sans", sans-serif;'
     >
         <div class="layout-container flex h-full grow flex-col">
-            
+
             <div class="gap-1 px-6 flex flex-1 justify-center py-5">
                 <div class="layout-content-container flex flex-col max-w-[920px] flex-1">
                     <div class="flex flex-wrap justify-between gap-3 p-4">
@@ -99,16 +99,16 @@
                     <div class="flex flex-col gap-3 p-4">
                         <div class="flex gap-6 justify-between">
                             <p class="text-white text-base font-medium leading-normal">Predicted Laps</p>
-                            <p class="text-white text-sm font-normal leading-normal">@(percent_of_gp.ToString())%</p>
+                            <p class="text-white text-sm font-normal leading-normal">@(Math.Round(percent_of_gp, 1).ToString())%</p>
                         </div>
                         <div class="rounded bg-[#42464d]"><div class="h-2 rounded bg-white" style="width: @(percent_of_gp.ToString() + "%");"></div></div>
                         @if(output != null)
                         {
-                            <p class="text-[#a4aab2] text-sm font-normal leading-normal">@output.Score of @total_laps laps</p>
+                            <p class="text-[#a4aab2] text-sm font-normal leading-normal">@Math.Round(output.Score, 2) of @total_laps laps</p>
                         }
                         else
                         {
-                            <p class="text-[#a4aab2] text-sm font-normal leading-normal">? of @total_laps laps</p>
+                            <p class="text-[#a4aab2] text-sm font-normal leading-normal">? of @(total_laps != null? total_laps : 'n') laps</p>
                         }
                     </div>
                 </div>
@@ -164,6 +164,9 @@
         output = MLModel1.Predict(input!);
 
         percent_of_gp = output.Score * 100 / total_laps;
+
+        if (circut != null)
+            total_laps = GPInfo.GetTotalLaps(circut, (int)input.Year);
     }
 
     private float ConvertCircutNameToLength()
@@ -179,4 +182,5 @@
             return -1;
         }
     }
+
 }

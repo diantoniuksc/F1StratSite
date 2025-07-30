@@ -1,6 +1,5 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
-using System.Xml.Linq;
 
 namespace F1StrategySite.Data
 {
@@ -30,7 +29,7 @@ namespace F1StrategySite.Data
 
         private const string filePath = @"Docs\circut_length.csv";
 
-        public static Dictionary<(string Name, int Year), float> LoadCircuitLengths(string filePath)
+        private static Dictionary<(string Name, int Year), float> LoadCircuitLengths(string filePath)
         {
             if (circutInfoDict != null)
             {
