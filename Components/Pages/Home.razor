@@ -1,7 +1,93 @@
 ﻿@page "/"
+@inject NavigationManager Navigation
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+<div class="home-root">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-image-container">
+            <img src="https://images.unsplash.com/photo-1500741236341-1b7a0f91f1f6?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Formula 1 car" class="hero-image" />
+            <div class="hero-overlay">
+                <h1 class="hero-title">Precision Engineering, Race-Winning Insights</h1>
+                <p class="hero-desc">Dive into the world of motorsports analysis and technology. Explore in-depth race analysis, vehicle dynamics, and the latest innovations shaping the future of racing.</p>
+                <button @onclick="NavigateToPrediction" class="hero-btn">Explore</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Analysis -->
+    <section class="section">
+        <h2 class="section-title">Latest Analysis</h2>
+        <div class="card-row">
+            <div class="card">
+                <h3 class="card-title">Decoding the Grand Prix: A Deep Dive into Race Strategy</h3>
+                <p class="card-desc">An in-depth analysis of the latest Grand Prix, examining key strategic decisions, driver performance, and technological factors that influenced the outcome.</p>
+                <a href="/analysis" class="card-link">Read More</a>
+            </div>
+            <div class="card-img">
+                <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80" alt="F1 car on track" />
+            </div>
+        </div>
+    </section>
+
+    <!-- Data & Tech -->
+    <section class="section">
+        <h2 class="section-title">Data & Tech</h2>
+        <div class="card-row">
+            <div class="card card-img-small">
+                <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80" alt="Aerodynamics visualization" />
+                <div style="padding: 1.1rem;">
+                    <h3 class="card-title">Aerodynamic Efficiency: Visualizing Vehicle Dynamics</h3>
+                    <p class="card-desc">Interactive visualizations of aerodynamic data, showcasing the impact of design changes on vehicle performance.</p>
+                </div>
+            </div>
+            <div class="card card-img-small">
+                <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" alt="Telemetry data" />
+                <div style="padding: 1.1rem;">
+                    <h3 class="card-title">Telemetry Analysis: Unlocking Performance Secrets</h3>
+                    <p class="card-desc">Explore real-time telemetry data from race cars, revealing insights into driver behavior and vehicle dynamics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Innovation -->
+    <section class="section">
+        <h2 class="section-title">Innovation</h2>
+        <div class="card-row">
+            <div class="card" style="display: flex; flex-direction: column; justify-content: center;">
+                <h3 class="card-title">The Future of Motorsports: Sustainable Technologies and Alternative Fuels</h3>
+                <p class="card-desc">A look at the cutting-edge technologies and sustainable solutions driving the next generation of motorsports, from electric racing to alternative fuel development.</p>
+                <a href="/innovation" class="card-link" style="max-width: 120px;">Learn More</a>
+            </div>
+            <div class="card-img">
+                <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=400&q=80" alt="Futuristic race car" />
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/about" class="footer-link">About</a>
+            <a href="/contact" class="footer-link">Contact</a>
+            <a href="/privacy" class="footer-link">Privacy Policy</a>
+            <a href="/terms" class="footer-link">Terms of Service</a>
+        </div>
+        <div class="footer-copy">
+            &copy; 2025 PitData Insights. All rights reserved.
+        </div>
+        <div class="footer-social">
+            <a href="#">&#xf099;</a>
+            <a href="#">&#xf16d;</a>
+            <a href="#">&#xf09a;</a>
+        </div>
+    </footer>
+</div>
+
+@code
+{
+    public void NavigateToPrediction() => Navigation.NavigateTo("/prediction", forceLoad: true);
+}
