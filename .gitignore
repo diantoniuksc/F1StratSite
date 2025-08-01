@@ -1,0 +1,46 @@
+# Ignore build output
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vs/
+.vscode/
+
+# ASP.NET secrets
+secrets.json
+
+# Logs
+*.log
+
+# OS generated files
+Thumbs.db
+.DS_Store
+
+# NuGet packages
+*.nupkg
+# Package directories
+packages/
+
+# Others
+*.tmp
+*.bak
+*.swp
+
+# Ignore published output
+wwwroot/dist/
+
+# Ignore generated files
+F1StrategySite.csproj.nuget.dgspec.json
+F1StrategySite.csproj.nuget.g.props
+F1StrategySite.csproj.nuget.g.targets
+project.assets.json
+project.nuget.cache
+
+.env
+appsettings.Development.json
