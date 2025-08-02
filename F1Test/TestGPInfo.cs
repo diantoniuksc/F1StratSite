@@ -8,7 +8,7 @@ namespace F1Test
         [TestMethod]
         public async Task TestApi()
         {
-            GPInfo info = new("Hungary", 2024);
+            GPInfo info = new("Hungarian Grand Prix", 2024, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"));
             var apiResponse = await info.GetGpInfoAsync();
             
             Assert.IsNotNull(apiResponse);
@@ -17,7 +17,7 @@ namespace F1Test
         [TestMethod]
         public async Task TestResponse()
         {
-            GPInfo info = new("Hungarian Grand Prix", 2024);
+            GPInfo info = new("Hungarian Grand Prix", 2024, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"));
             var circut = await info.GetCircuitName();
 
             circut.Equals("Hungaroring");
