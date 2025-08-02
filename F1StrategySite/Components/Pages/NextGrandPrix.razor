@@ -78,15 +78,15 @@
                         </div>
                         <div class="col-span-2 grid grid-cols-subgrid border-t border-t-[#3b4554] py-5">
                             <p class="text-[#9da8b9] text-sm font-normal leading-normal">Circuit Name</p>
-                            <p class="text-white text-sm font-normal leading-normal">@GrandPrixName</p>
+                            <p class="text-white text-sm font-normal leading-normal">@Circut</p>
                         </div>
                         <div class="col-span-2 grid grid-cols-subgrid border-t border-t-[#3b4554] py-5">
                             <p class="text-[#9da8b9] text-sm font-normal leading-normal">Location</p>
-                            <p class="text-white text-sm font-normal leading-normal">@GrandPrixName</p>
+                            <p class="text-white text-sm font-normal leading-normal">@Location</p>
                         </div>
                         <div class="col-span-2 grid grid-cols-subgrid border-t border-t-[#3b4554] py-5">
                             <p class="text-[#9da8b9] text-sm font-normal leading-normal">Date and Time</p>
-                            <p class="text-white text-sm font-normal leading-normal">May 26, 2024, 3:00 PM CEST</p>
+                            <p class="text-white text-sm font-normal leading-normal">@RaceDateTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
                         </div>
                     </div>
                     <div class="flex gap-4 py-6 px-4">
@@ -194,12 +194,20 @@
 {
     public string GrandPrixName { get; set; }
     private string Photo { get; set; }
+    public string Circut { get; set; }
+    public string Location { get; set; }
+    public DateTime RaceDateTime { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         NextGPInfo nextGp = new(DateTime.Now);
         GrandPrixName = nextGp.GetNextGP();
         Photo = await nextGp.GetPhotoUrl();
-        Console.WriteLine(Photo);
+
+
+        GPInfo info = new(GrandPrixName, 2024);
+        Circut = await info.GetCircuitName();
+        Location = await info.GetLocation();
+        RaceDateTime = await info.GetRaceDateTime();
     }
 }

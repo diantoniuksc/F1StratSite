@@ -8,19 +8,37 @@ namespace F1Test
         [TestMethod]
         public async Task TestApi()
         {
-            GPInfo info = new("Hungarian Grand Prix", 2024, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"));
+            GPInfo info = new("Bahrain Grand Prix", 2024, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"));
             var apiResponse = await info.GetGpInfoAsync();
-            
+
             Assert.IsNotNull(apiResponse);
         }
 
         [TestMethod]
-        public async Task TestResponse()
+        public async Task TestCircut()
         {
             GPInfo info = new("Hungarian Grand Prix", 2024, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"));
             var circut = await info.GetCircuitName();
 
-            circut.Equals("Hungaroring");
+            Assert.IsTrue(circut.Equals("Hungaroring"));
+        }
+
+        [TestMethod]
+        public async Task TestLocation()
+        {
+            GPInfo info = new("Hungarian Grand Prix", 2024, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"));
+            var location = await info.GetLocation();
+
+            Assert.IsTrue(location.Equals("Budapest, Hungary"));
+        }
+
+        [TestMethod]
+        public async Task TestDateTime()
+        {
+            GPInfo info = new("Hungarian Grand Prix", 2024, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"));
+            var dateTime = await info.GetRaceDateTime();
+
+            Assert.AreEqual(new DateTime(2024, 7, 21, 13, 0, 0), dateTime);
         }
     }
 }
