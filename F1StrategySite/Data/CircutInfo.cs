@@ -7,7 +7,6 @@ namespace F1StrategySite.Data
     {
         public string Name { get; set; }
         public float Length { get; set; }
-        public int Year { get; set; }
     }
 
     public class CircuitInfoRecordMap : ClassMap<CircuitInfoRecord>
@@ -16,7 +15,6 @@ namespace F1StrategySite.Data
         {
             Map(m => m.Name).Index(0);
             Map(m => m.Length).Index(1);
-            Map(m => m.Year).Index(2);
         }
     }
 
@@ -24,16 +22,15 @@ namespace F1StrategySite.Data
     {
         public static string Name { get; set; }
         public static float Length { get; set; }
-        public static int Year { get; set; }
-        private static Dictionary<(string Name, int Year), float> circutInfoDict { get; set; }
+        private static Dictionary<string, float> CircuitLengths { get; set; }
 
         private const string filePath = @"Docs\circut_length.csv";
 
-        private static Dictionary<(string Name, int Year), float> LoadCircuitLengths(string filePath)
+        private static Dictionary<string, float> LoadCircuitLengths(string filePath)
         {
-            if (circutInfoDict != null)
+            if (CircuitLengths != null)
             {
-                return circutInfoDict;
+                return CircuitLengths;
             }
 
             using var reader = new StreamReader(filePath);      
@@ -48,28 +45,25 @@ namespace F1StrategySite.Data
             csv.Context.RegisterClassMap<CircuitInfoRecordMap>();
 
             var circuits = csv.GetRecords<CircuitInfoRecord>().ToList();
-            // Create dictionary: key = (Name, Year), value = Length
-            circutInfoDict = circuits.ToDictionary(
-                c => (c.Name.Trim(), c.Year),
+            CircuitLengths = circuits.ToDictionary(
+                c => c.Name.Trim(),
                 c => c.Length
             );
 
-            return circutInfoDict;
+            return CircuitLengths;
         }
 
-        public static float GetCircuitLength(string name, int year)
+        public static float GetCircuitLength(string name)
         {
             var circuitLengths = LoadCircuitLengths(filePath);
-            Console.WriteLine(circuitLengths[circuitLengths.Keys.FirstOrDefault()]);
-            Console.WriteLine(circuitLengths.Keys.FirstOrDefault());
-            var key = (name.Trim() + " Grand Prix", year);
+            var key = name.Trim() + " Grand Prix";
             if (circuitLengths.TryGetValue(key, out var length))
             {
                 return length;
             }
             else
             {
-                throw new KeyNotFoundException($"Circuit '{name}' for year {year} not found.");
+                throw new KeyNotFoundException($"Circuit '{name}' not found.");
             }
         }
     }

@@ -8,26 +8,28 @@ namespace F1StrategySite.Data
 {
     public class GPInfo
     {
-        private Dictionary<(string Name, int Year), int> gpInfoDict { get; set; }
+        private static Dictionary<string, int> GpInfoDict { get; set; }
+        protected static Dictionary<DateTime, string> CalendarDict { get; set; }
         private string FilePath { get; set; } = @"Docs\gps_laps.csv";
+        protected string CalendarPath { get; set; } = @"Docs\grand_prix_calendar.csv";
         public string GpName { get; private set; }
         public int Year { get; private set; }
         private static string GpInfo { get; set; }
 
 
 
-        public GPInfo(string name, int year, string path = null)
+        public GPInfo(string name, int year, string path = null, string calPath = null)
         {
             GpName = name;
             Year = year;
             FilePath = path ?? @"Docs\gps_laps.csv";
+            CalendarPath = calPath ?? @"Docs\grand_prix_calendar.csv";
         }
 
 
         private void LoadGPInfo(string filePath)
         {
-            gpInfoDict = new Dictionary<(string Name, int Year), int>();
-
+            GpInfoDict = new();
             using var reader = new StreamReader(filePath);
 
             while (true)
@@ -38,42 +40,65 @@ namespace F1StrategySite.Data
 
                 string[] gpdata = row.Split(',');
 
-                if (gpdata.Length >= 3 &&
-                    double.TryParse(gpdata[2], out double totalLaps))
+                if (double.TryParse(gpdata[1], out double totalLaps))
                 {
-                    gpInfoDict[(gpdata[0], int.Parse(gpdata[1]))] = (int)totalLaps;
+                    GpInfoDict[gpdata[0]] = (int)totalLaps;
                 }
             }
         }
 
-        public int GetTotalLaps()
-        {
-            if (gpInfoDict == null)
-                LoadGPInfo(FilePath);
 
-            return gpInfoDict[(GpName + " Grand Prix", Year)];
+        protected void LoadCalendar(string filePath)
+        {
+            CalendarDict = new();
+            using var reader = new StreamReader(filePath);
+
+            while (true)
+            {
+                var row = reader.ReadLine();
+                if (row == null)
+                    break;
+
+                string[] gpdata = row.Split(',');
+
+                if (DateTime.TryParse(gpdata[1], out DateTime date))
+                {
+                    CalendarDict[date] = gpdata[0];
+                }
+            }
         }
 
 
 
-        private int GetGpNumber()
+        public int GetTotalLaps()
         {
-            if (gpInfoDict == null)
+            if (GpInfoDict == null)
                 LoadGPInfo(FilePath);
 
+            return GpInfoDict[GpName + " Grand Prix"];
+        }
+
+        private int GetGpNumber()
+        {
+            using var reader = new StreamReader(CalendarPath);
             int round = 1;
-            foreach (var key in gpInfoDict.Keys)
+            while (true)
             {
-                if (key.Year == Year)
+                var row = reader.ReadLine();
+                if (row == null)
+                    break;
+                var gpdata = row.Split(',');
+                if (gpdata.Length >= 2)
                 {
-                    if (key.Name.Trim().Equals(GpName.Trim(), StringComparison.OrdinalIgnoreCase))
+                    string name = gpdata[0].Trim();
+                    if (name.Equals(GpName.Trim(), StringComparison.OrdinalIgnoreCase))
                     {
                         return round;
                     }
                     round++;
                 }
             }
-            throw new Exception($"No GP found for {GpName} in {Year}");
+            throw new Exception($"No GP found for {GpName}");
         }
 
         private static HttpClient sharedClient = new()
@@ -83,9 +108,8 @@ namespace F1StrategySite.Data
 
         public async Task<string> GetGpInfoAsync()
         {
-            // Use GetGpNumber to get the round number for this GP and year
             int round = GetGpNumber();
-            // Jolpica endpoint for a specific race
+
             string url = $"ergast/f1/{Year}/{round}";
             using HttpResponseMessage response = await sharedClient.GetAsync(url);
             response.EnsureSuccessStatusCode();

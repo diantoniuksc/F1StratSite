@@ -8,7 +8,9 @@ namespace F1Test
         [TestMethod]
         public async Task TestApi()
         {
-            GPInfo info = new("Bahrain Grand Prix", 2024, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"));
+            GPInfo info = new("Hungarian Grand Prix", 2024,
+               Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"),
+               Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\grand_prix_calendar.csv"));
             var apiResponse = await info.GetGpInfoAsync();
 
             Assert.IsNotNull(apiResponse);
@@ -17,7 +19,9 @@ namespace F1Test
         [TestMethod]
         public async Task TestCircut()
         {
-            GPInfo info = new("Hungarian Grand Prix", 2024, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"));
+            GPInfo info = new("Hungarian Grand Prix", 2024, 
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"),
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\grand_prix_calendar.csv"));
             var circut = await info.GetCircuitName();
 
             Assert.IsTrue(circut.Equals("Hungaroring"));
@@ -26,7 +30,9 @@ namespace F1Test
         [TestMethod]
         public async Task TestLocation()
         {
-            GPInfo info = new("Hungarian Grand Prix", 2024, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"));
+            GPInfo info = new("Hungarian Grand Prix", 2024,
+               Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"),
+               Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\grand_prix_calendar.csv"));
             var location = await info.GetLocation();
 
             Assert.IsTrue(location.Equals("Budapest, Hungary"));
@@ -35,7 +41,9 @@ namespace F1Test
         [TestMethod]
         public async Task TestDateTime()
         {
-            GPInfo info = new("Hungarian Grand Prix", 2024, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"));
+            GPInfo info = new("Hungarian Grand Prix", 2024,
+               Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"),
+               Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\grand_prix_calendar.csv"));
             var dateTime = await info.GetRaceDateTime();
 
             Assert.AreEqual(new DateTime(2024, 7, 21, 13, 0, 0), dateTime);
@@ -44,17 +52,21 @@ namespace F1Test
         [TestMethod]
         public async Task TestCoordinates()
         {
-            GPInfo info = new("Bahrain Grand Prix", 2024, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"));
+            GPInfo info = new("Hungarian Grand Prix", 2024,
+               Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"),
+               Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\grand_prix_calendar.csv"));
             var map = await info.GetCircutCoordinatesAsync();
 
-            Assert.AreEqual<(double Latitude, double Longitude)>((26.0325, 50.5106),
+            Assert.AreEqual<(double Latitude, double Longitude)>((47.5789, 19.2486),
                 (double.Parse(map.Item1), double.Parse(map.Item2)));
         }
 
         [TestMethod]
         public async Task TestWeekStartDate()
         {
-            GPInfo info = new("Dutch Grand Prix", 2025, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"));
+            GPInfo info = new("Dutch Grand Prix", 2025,
+               Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"),
+               Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\grand_prix_calendar.csv"));
             var date = await info.GetRaceWeekStartDateAsync();
 
             Assert.AreEqual(new DateOnly(2025, 8, 29), date);

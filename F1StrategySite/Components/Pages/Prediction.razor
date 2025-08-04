@@ -161,24 +161,22 @@
         input!.Race_length = ConvertCircutNameToLength();
 
         Console.WriteLine($"Driver: {input!.Driver_id}, Compound: {input!.Compound}, Circut: {circut}, Circut Length: {input.Race_length}");
-        output = MLModel1.Predict(input!);
-
-        percent_of_gp = output.Score * 100 / total_laps;
+        output = MLModel1.Predict(input!); 
 
         if (circut != null)
         {
             GPInfo grandPrix = new(circut, (int)input.Year);
             total_laps = grandPrix.GetTotalLaps();
         }
+
+        percent_of_gp = output.Score * 100 / total_laps;
     }
 
     private float ConvertCircutNameToLength()
     {
-        float circutLength;
-
         if (circut != null)
         {
-            return CircutInfo.GetCircuitLength(circut, (int)input.Year);
+            return CircutInfo.GetCircuitLength(circut);
         }
         else
         {
