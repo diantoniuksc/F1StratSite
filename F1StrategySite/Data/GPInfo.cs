@@ -51,7 +51,7 @@ namespace F1StrategySite.Data
             if (gpInfoDict == null)
                 LoadGPInfo(FilePath);
 
-            return gpInfoDict[(GpName + "", Year)];
+            return gpInfoDict[(GpName + " Grand Prix", Year)];
         }
 
 
@@ -139,7 +139,7 @@ namespace F1StrategySite.Data
 
         }
 
-        
+
         public async Task<DateTime> GetRaceDateTime()
         {
             if (GpInfo == null)
@@ -148,8 +148,8 @@ namespace F1StrategySite.Data
             const string dateKey = "\"date\":\"";
             const string timeKey = "\"time\":\"";
 
-            string date = FindByKey(dateKey); 
-            string time = FindByKey(timeKey); 
+            string date = FindByKey(dateKey);
+            string time = FindByKey(timeKey);
 
             if (date == null || time == null)
                 throw new Exception("Could not find race date or time in JSON.");
@@ -162,6 +162,17 @@ namespace F1StrategySite.Data
             if (DateTime.TryParse(dateTimeStr, out DateTime result))
                 return result;
             throw new Exception($"Could not parse date/time: {dateTimeStr}");
+        }
+
+        public async Task<(string, string)> GetCircutCoordinatesAsync()
+        {
+            if (GpInfo == null)
+                await GetGpInfoAsync();
+
+            string lat = FindByKey("\"lat\":\"");
+            string lon = FindByKey("\"long\":\"");
+            
+            return (lat, lon);
         }
     }
 }

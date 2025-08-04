@@ -117,10 +117,7 @@
                     </div>
                     <h2 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Circuit Information</h2>
                     <div class="flex px-4 py-3">
-                        <div
-                        class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-xl object-cover"
-                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB-CA0KPNO02qBbF0YGdVitlrES2uylZp1J9ERjmUuJjOjZhb2MgLNdc3ywwuMhsjaeIfSsHjBvG0mQtxlIOzGVyR6PY6lqQsQRkGe8OMeuj2t6p4UU8oNv6yG3YgbNRK1ztbniaUAbyrSvt8EFHlU5gP6LAlUO8fvh3dmp6uZ2pyTqwBd7otIsHJZSFiA36eUMm70fUuQAcxV-uzy7RuaMsWm9aPFLX5VEBGddMG0h87hafmUNMRi6NVGYfAdX9QBw-MbTjpW6ips");'
-                        ></div>
+                        <CircuitMap Latitude=@Latitude Longitude=@Longitude />
                     </div>
                     <div class="p-4 grid grid-cols-[20%_1fr] gap-x-6">
                         <div class="col-span-2 grid grid-cols-subgrid border-t border-t-[#3b4554] py-5">
@@ -197,6 +194,9 @@
     public string Circut { get; set; }
     public string Location { get; set; }
     public DateTime RaceDateTime { get; set; }
+    public double Latitude { get; private set; }
+    public double Longitude { get; private set; }
+    public int a { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -209,5 +209,9 @@
         Circut = await info.GetCircuitName();
         Location = await info.GetLocation();
         RaceDateTime = await info.GetRaceDateTime();
+        var coords = await info.GetCircutCoordinatesAsync();
+        Latitude = Convert.ToDouble(coords.Item1);
+        Longitude = Convert.ToDouble(coords.Item2);
+        a = 5;
     }
 }

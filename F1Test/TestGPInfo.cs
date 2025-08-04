@@ -40,5 +40,15 @@ namespace F1Test
 
             Assert.AreEqual(new DateTime(2024, 7, 21, 13, 0, 0), dateTime);
         }
-    }
+
+        [TestMethod]
+        public async Task TestCoordinates()
+        {
+            GPInfo info = new("Bahrain Grand Prix", 2024, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"));
+            var map = await info.GetCircutCoordinatesAsync();
+
+            Assert.AreEqual<(double Latitude, double Longitude)>((26.0325, 50.5106),
+                (double.Parse(map.Item1), double.Parse(map.Item2)));
+        }
+   }
 }
