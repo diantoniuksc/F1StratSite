@@ -1,0 +1,76 @@
+﻿@using System.Timers
+
+<p class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">
+Race Week Starts in 
+</p>
+<div class="flex gap-4 py-6 px-4">
+    <div class="flex grow basis-0 flex-col items-stretch gap-4">
+        <div class="flex h-14 grow items-center justify-center rounded-xl px-3 bg-[#282f39]">
+            <p class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">@remainingTime.Days.ToString("D2")</p>
+        </div>
+        <div class="flex items-center justify-center">
+            <p class="text-white text-sm font-normal leading-normal">Days</p>
+        </div>
+    </div>
+    <div class="flex grow basis-0 flex-col items-stretch gap-4">
+        <div class="flex h-14 grow items-center justify-center rounded-xl px-3 bg-[#282f39]">
+            <p class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">@remainingTime.Hours.ToString("D2")</p>
+        </div>
+        <div class="flex items-center justify-center">
+            <p class="text-white text-sm font-normal leading-normal">Hours</p>
+        </div>
+    </div>
+    <div class="flex grow basis-0 flex-col items-stretch gap-4">
+        <div class="flex h-14 grow items-center justify-center rounded-xl px-3 bg-[#282f39]">
+            <p class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">@remainingTime.Minutes.ToString("D2")</p>
+        </div>
+        <div class="flex items-center justify-center">
+            <p class="text-white text-sm font-normal leading-normal">Minutes</p>
+        </div>
+    </div>
+    <div class="flex grow basis-0 flex-col items-stretch gap-4">
+        <div class="flex h-14 grow items-center justify-center rounded-xl px-3 bg-[#282f39]">
+            <p class="text-white text-lg font-bold leading-tight tracking-[-0.015em]">@remainingTime.Seconds.ToString("D2")</p>
+        </div>
+        <div class="flex items-center justify-center">
+            <p class="text-white text-sm font-normal leading-normal">Seconds</p>
+        </div>
+    </div>
+</div>
+
+@code
+{
+   [Parameter]
+    public DateTime TargetDateTime { get; set; } = DateTime.Now.AddDays(5).AddHours(12);
+
+    private TimeSpan remainingTime = TimeSpan.Zero;
+    private Timer? timer;
+
+    protected override void OnInitialized()
+    {
+        UpdateCountdown();
+        timer = new Timer(1000);
+        timer.Elapsed += (s, e) =>
+        {
+            UpdateCountdown();
+            InvokeAsync(StateHasChanged);
+        };
+        timer.Start();
+    }
+
+    private void UpdateCountdown()
+    {
+        var now = DateTime.Now;
+        remainingTime = TargetDateTime - now;
+        if (remainingTime <= TimeSpan.Zero)
+        {
+            remainingTime = TimeSpan.Zero;
+            timer?.Stop();
+        }
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+}

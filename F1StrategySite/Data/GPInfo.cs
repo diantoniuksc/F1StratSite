@@ -174,5 +174,15 @@ namespace F1StrategySite.Data
             
             return (lat, lon);
         }
+
+        public async Task<DateOnly> GetRaceWeekStartDateAsync()
+        {
+            if (GpInfo == null)
+                await GetGpInfoAsync();
+
+            DateOnly date = DateOnly.Parse(FindByKey("\"FirstPractice\":{\"date\":\""));
+
+            return date;
+        }
     }
 }

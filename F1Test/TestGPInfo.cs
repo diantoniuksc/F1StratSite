@@ -50,5 +50,14 @@ namespace F1Test
             Assert.AreEqual<(double Latitude, double Longitude)>((26.0325, 50.5106),
                 (double.Parse(map.Item1), double.Parse(map.Item2)));
         }
-   }
+
+        [TestMethod]
+        public async Task TestWeekStartDate()
+        {
+            GPInfo info = new("Dutch Grand Prix", 2025, Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"));
+            var date = await info.GetRaceWeekStartDateAsync();
+
+            Assert.AreEqual(new DateOnly(2025, 8, 29), date);
+        }
+    }
 }
