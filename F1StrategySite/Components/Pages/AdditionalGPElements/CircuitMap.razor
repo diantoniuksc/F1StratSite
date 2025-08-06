@@ -10,17 +10,17 @@
     private double localLat;
     private double localLon;
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
         localLat = Latitude;
         localLon = Longitude;
     }
 
-protected override async Task OnAfterRenderAsync(bool firstRender)
-{
-    if (localLat != 0 && localLon != 0)
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await JS.InvokeVoidAsync("initCircuitMap", localLat, localLon);
+        if (localLat != 0 && localLon != 0)
+        {
+            await JS.InvokeVoidAsync("initCircuitMap", localLat, localLon);
+        }
     }
-}
 }

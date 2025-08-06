@@ -6,28 +6,28 @@ using Microsoft.ML.Data;
 
 namespace F1StrategySite.Data
 {
-    public class GPInfo
+    public class GPInfo(string name, int year, string path = @"Docs\gps_laps.csv", string calPath = @"Docs\grand_prix_calendar.csv")
     {
         private static Dictionary<string, int> GpInfoDict { get; set; }
         protected static Dictionary<DateTime, string> CalendarDict { get; set; }
-        private string FilePath { get; set; } = @"Docs\gps_laps.csv";
-        protected string CalendarPath { get; set; } = @"Docs\grand_prix_calendar.csv";
-        public string GpName { get; private set; }
-        public int Year { get; private set; }
+        private string FilePath { get; set; } = path;
+        protected string CalendarPath { get; set; } = calPath;
+        public string GpName { get; private set; } = name;
+        public int Year { get; private set; } = year;
         private static string GpInfo { get; set; }
 
 
 
-        public GPInfo(string name, int year, string path = null, string calPath = null)
+       /* public GPInfo(string name, int year, string path = null, string calPath = null)
         {
             GpName = name;
             Year = year;
             FilePath = path ?? @"Docs\gps_laps.csv";
             CalendarPath = calPath ?? @"Docs\grand_prix_calendar.csv";
-        }
+        }*/
 
 
-        private void LoadGPInfo(string filePath)
+        private static void LoadGPInfo(string filePath)
         {
             GpInfoDict = new();
             using var reader = new StreamReader(filePath);
@@ -101,7 +101,7 @@ namespace F1StrategySite.Data
             throw new Exception($"No GP found for {GpName}");
         }
 
-        private static HttpClient sharedClient = new()
+        private static readonly HttpClient sharedClient = new()
         {
             BaseAddress = new Uri("https://api.jolpi.ca/"),
         };
@@ -122,7 +122,7 @@ namespace F1StrategySite.Data
 
 
 
-        private string FindByKey(string key)
+        private static string FindByKey(string key)
         {
             int start = GpInfo.IndexOf(key);
             if (start == -1)
@@ -133,7 +133,7 @@ namespace F1StrategySite.Data
             if (end == -1)
                 return null;
 
-            return GpInfo.Substring(start, end - start);
+            return GpInfo[start..end];
         }
 
         public async Task<string> GetCircuitName()
@@ -179,8 +179,8 @@ namespace F1StrategySite.Data
                 throw new Exception("Could not find race date or time in JSON.");
 
             // Remove trailing 'Z' if present
-            if (time.EndsWith("Z"))
-                time = time.Substring(0, time.Length - 1);
+            if (time.EndsWith('Z'))
+                time = time[..^1];
 
             string dateTimeStr = $"{date} {time}";
             if (DateTime.TryParse(dateTimeStr, out DateTime result))
