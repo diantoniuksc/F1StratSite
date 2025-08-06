@@ -154,29 +154,29 @@
         }
     }
 
-    private void HandleValidSubmit()
+    private async void HandleValidSubmit()
     {
         Console.WriteLine("Form Submitted!");
 
-        input!.Race_length = ConvertCircutNameToLength();
+        input!.Race_length = await ConvertCircutNameToLength();
 
         Console.WriteLine($"Driver: {input!.Driver_id}, Compound: {input!.Compound}, Circut: {circut}, Circut Length: {input.Race_length}");
         output = MLModel1.Predict(input!); 
 
         if (circut != null)
         {
-            GPInfo grandPrix = new(circut, (int)input.Year);
+            GPInfo grandPrix = new(circut + " Grand Prix", (int)input.Year);
             total_laps = grandPrix.GetTotalLaps();
         }
 
         percent_of_gp = output.Score * 100 / total_laps;
     }
 
-    private float ConvertCircutNameToLength()
+    private async Task<float> ConvertCircutNameToLength()
     {
         if (circut != null)
         {
-            return CircutInfo.GetCircuitLength(circut);
+            return await CircutInfo.GetCircuitLengthAsync(circut + " Grand Prix");
         }
         else
         {

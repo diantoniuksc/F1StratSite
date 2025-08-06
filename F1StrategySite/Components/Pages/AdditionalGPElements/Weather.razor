@@ -1,0 +1,106 @@
+@code {
+        [Parameter] public double Latitude { get; set; }
+        [Parameter] public double Longitude { get; set; }
+        [Parameter] public DateTime RaceDate { get; set; }
+
+    public WeatherForecast Forecast { get; set; }
+    public bool IsLoading { get; set; } = true;
+    public string Error { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = new HttpClient();
+            string startDate = RaceDate.AddDays(-2).ToString("yyyy-MM-dd");
+            string endDate = RaceDate.ToString("yyyy-MM-dd");
+            string url = $"https://api.open-meteo.com/v1/forecast?latitude={Latitude}&longitude={Longitude}&hourly=temperature_2m,precipitation_probability,surface_pressure,wind_speed_10m&start_date={startDate}&end_date={endDate}";
+            var response = await client.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            Forecast = System.Text.Json.JsonSerializer.Deserialize<WeatherForecast>(json);
+        }
+        catch (Exception ex)
+        {
+            Error = ex.Message;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    public class WeatherForecast
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("hourly")]
+        public HourlyData? Hourly { get; set; }
+        public class HourlyData
+        {
+            [System.Text.Json.Serialization.JsonPropertyName("time")]
+            public List<string>? Time { get; set; }
+            [System.Text.Json.Serialization.JsonPropertyName("temperature_2m")]
+            public List<double>? Temperature2m { get; set; }
+            [System.Text.Json.Serialization.JsonPropertyName("precipitation_probability")]
+            public List<double>? PrecipitationProbability { get; set; }
+            [System.Text.Json.Serialization.JsonPropertyName("surface_pressure")]
+            public List<double>? SurfacePressure { get; set; }
+            [System.Text.Json.Serialization.JsonPropertyName("wind_speed_10m")]
+            public List<double>? WindSpeed10m { get; set; }
+        }
+    }
+}
+
+@if (IsLoading)
+{
+    <p>Loading weather forecast...</p>
+}
+else if (!string.IsNullOrEmpty(Error))
+{
+    <p class="text-red-500">Error: @Error</p>
+}
+else if (Forecast?.Hourly != null)
+{
+    <h2 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Weather Forecast</h2>
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
+        @for (int i = 0; i < 3; i++)
+        {
+            var dayName = i == 0 ? "Friday" : i == 1 ? "Saturday" : "Sunday";
+            int idx = RaceDate.Hour + i * 24;
+            double? precip = Forecast.Hourly?.PrecipitationProbability?[idx];
+            double? wind = Forecast.Hourly?.WindSpeed10m?[idx];
+            double? temp = Forecast.Hourly?.Temperature2m?[idx];
+
+            string icon;
+            if (precip.HasValue && precip.Value > 50)
+                icon = "Rain";
+            else if (temp.HasValue && temp.Value > 20 && (precip ?? 0) < 20)
+                icon = "Sun";
+            else
+                icon = "Cloud";
+
+            var svg = icon == "Sun" ? @"<svg xmlns='http://www.w3.org/2000/svg' width='24px' height='24px' fill='currentColor' viewBox='0 0 256 256'><path d='M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z'></path></svg>"
+                : icon == "Rain" ? @"<svg xmlns='http://www.w3.org/2000/svg' width='24px' height='24px' fill='currentColor' viewBox='0 0 256 256'><path d='M158.66,196.44l-32,48a8,8,0,1,1-13.32-8.88l32-48a8,8,0,0,1,13.32-8.88ZM232,92a76.08,76.08,0,0,1-76,76H132.28l-29.62,44.44a8,8,0,1,1-13.32-8.88L113.05,168H76A52,52,0,0,1,76,64a53.26,53.26,0,0,1,8.92.76A76.08,76.08,0,0,1,232,92Zm-16,0A60.06,60.06,0,0,0,96,88.46a8,8,0,0,1-16-.92q.21-3.66.77-7.23A38.11,38.11,0,0,0,76,80a36,36,0,0,0,0,72h80A60.07,60.07,0,0,0,216,92Z'></path></svg>"
+                : @"<svg xmlns='http://www.w3.org/2000/svg' width='24px' height='24px' fill='currentColor' viewBox='0 0 256 256'><path d='M160,40A88.09,88.09,0,0,0,81.29,88.67,64,64,0,1,0,72,216h88a88,88,0,0,0,0-176Zm0,160H72a48,48,0,0,1,0-96c1.1,0,2.2,0,3.29.11A88,88,0,0,0,72,128a8,8,0,0,0,16,0,72,72,0,1,1,72,72Z'></path></svg>";
+
+            // Calculate the date for this day
+            var dayDate = RaceDate.Date.AddDays(i - 2); 
+            var targetHour = RaceDate.Hour;
+
+
+            <div class="flex flex-1 gap-3 rounded-lg border border-[#3b4554] bg-[#1c2027] p-4 flex-col">
+                <div class="text-white" data-icon="@icon" data-size="24px" data-weight="regular">
+                    @((MarkupString)svg)
+                </div>
+                <div class="flex flex-col gap-1">
+                    <h2 class="text-white text-base font-bold leading-tight">@dayName</h2>
+                        <div class="text-[#9da8b9] text-sm font-normal leading-normal flex flex-col gap-1">
+                                    <span>Thermometer: @temp°C</span>
+                                    <span>Wind: @wind km/h</span>
+                                    <span>Precipitation Probability: @precip%</span>
+                                    <span>Surface Pressure: @Forecast.Hourly?.SurfacePressure?[idx] hPa</span>
+                        </div>
+                </div>
+            </div>
+        }
+    </div>
+}

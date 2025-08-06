@@ -75,7 +75,7 @@ namespace F1StrategySite.Data
             if (GpInfoDict == null)
                 LoadGPInfo(FilePath);
 
-            return GpInfoDict[GpName + " Grand Prix"];
+            return GpInfoDict[GpName];
         }
 
         private int GetGpNumber()

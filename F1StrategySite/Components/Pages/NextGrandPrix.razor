@@ -62,63 +62,18 @@
                     <div class="p-4 grid grid-cols-[20%_1fr] gap-x-6">
                         <div class="col-span-2 grid grid-cols-subgrid border-t border-t-[#3b4554] py-5">
                             <p class="text-[#9da8b9] text-sm font-normal leading-normal">Lap Length</p>
-                            <p class="text-white text-sm font-normal leading-normal">3.337 km (2.074 mi)</p>
+                            <p class="text-white text-sm font-normal leading-normal">@CircuitLength km (@(Math.Round(CircuitLength / 1.609, 2)) mi)</p>
                         </div>
                         <div class="col-span-2 grid grid-cols-subgrid border-t border-t-[#3b4554] py-5">
                             <p class="text-[#9da8b9] text-sm font-normal leading-normal">Race Distance</p>
-                            <p class="text-white text-sm font-normal leading-normal">260.520 km (161.880 mi)</p>
+                            <p class="text-white text-sm font-normal leading-normal">@Math.Round(RaceDistance) km (@(Math.Round(RaceDistance / 1.609, 2)) mi)</p>
                         </div>
                         <div class="col-span-2 grid grid-cols-subgrid border-t border-t-[#3b4554] py-5">
                             <p class="text-[#9da8b9] text-sm font-normal leading-normal">Number of Laps</p>
-                            <p class="text-white text-sm font-normal leading-normal">78</p>
-                        </div>
-                        <div class="col-span-2 grid grid-cols-subgrid border-t border-t-[#3b4554] py-5">
-                            <p class="text-[#9da8b9] text-sm font-normal leading-normal">DRS Zones</p>
-                            <p class="text-white text-sm font-normal leading-normal">2</p>
+                            <p class="text-white text-sm font-normal leading-normal">@TotalLaps</p>
                         </div>
                     </div>
-                    <h2 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Weather Forecast</h2>
-                    <div class="grid grid-cols-[repeat(auto-fit,minmax(158px,1fr))] gap-3 p-4">
-                        <div class="flex flex-1 gap-3 rounded-lg border border-[#3b4554] bg-[#1c2027] p-4 flex-col">
-                            <div class="text-white" data-icon="Sun" data-size="24px" data-weight="regular">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
-                                    <path
-                                    d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"
-                                    ></path>
-                                </svg>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <h2 class="text-white text-base font-bold leading-tight">Friday</h2>
-                                <p class="text-[#9da8b9] text-sm font-normal leading-normal">Thermometer: 22°C / 72°F, Wind: 15 km/h, Droplet: 10%</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-1 gap-3 rounded-lg border border-[#3b4554] bg-[#1c2027] p-4 flex-col">
-                            <div class="text-white" data-icon="Cloud" data-size="24px" data-weight="regular">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
-                                    <path
-                                    d="M160,40A88.09,88.09,0,0,0,81.29,88.67,64,64,0,1,0,72,216h88a88,88,0,0,0,0-176Zm0,160H72a48,48,0,0,1,0-96c1.1,0,2.2,0,3.29.11A88,88,0,0,0,72,128a8,8,0,0,0,16,0,72,72,0,1,1,72,72Z"
-                                    ></path>
-                                </svg>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <h2 class="text-white text-base font-bold leading-tight">Saturday</h2>
-                                <p class="text-[#9da8b9] text-sm font-normal leading-normal">Thermometer: 24°C / 75°F, Wind: 12 km/h, Droplet: 5%</p>
-                            </div>
-                        </div>
-                        <div class="flex flex-1 gap-3 rounded-lg border border-[#3b4554] bg-[#1c2027] p-4 flex-col">
-                            <div class="text-white" data-icon="CloudRain" data-size="24px" data-weight="regular">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
-                                    <path
-                                    d="M158.66,196.44l-32,48a8,8,0,1,1-13.32-8.88l32-48a8,8,0,0,1,13.32,8.88ZM232,92a76.08,76.08,0,0,1-76,76H132.28l-29.62,44.44a8,8,0,1,1-13.32-8.88L113.05,168H76A52,52,0,0,1,76,64a53.26,53.26,0,0,1,8.92.76A76.08,76.08,0,0,1,232,92Zm-16,0A60.06,60.06,0,0,0,96,88.46a8,8,0,0,1-16-.92q.21-3.66.77-7.23A38.11,38.11,0,0,0,76,80a36,36,0,0,0,0,72h80A60.07,60.07,0,0,0,216,92Z"
-                                    ></path>
-                                </svg>
-                            </div>
-                            <div class="flex flex-col gap-1">
-                                <h2 class="text-white text-base font-bold leading-tight">Sunday</h2>
-                                <p class="text-[#9da8b9] text-sm font-normal leading-normal">Thermometer: 20°C / 68°F, Wind: 18 km/h, Droplet: 15%</p>
-                            </div>
-                        </div>
-                    </div>
+                    <Weather Latitude=52.3888 Longitude=4.54092 RaceDate=@(new DateTime(2025, 08, 09, 15, 00, 00))></Weather>
                 </div>
             </div>
         </div>
@@ -137,6 +92,9 @@
     public double Latitude { get; private set; }
     public double Longitude { get; private set; }
     public DateOnly RaceWeek { get; private set; }
+    public float CircuitLength { get; private set; }
+    public float RaceDistance { get; private set; }
+    public int TotalLaps { get; private set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -153,6 +111,10 @@
         Latitude = Convert.ToDouble(coords.Item1);
         Longitude = Convert.ToDouble(coords.Item2);
         RaceWeek = await info.GetRaceWeekStartDateAsync();
+        TotalLaps = info.GetTotalLaps();
 
+        CircuitLength = await CircutInfo.GetCircuitLengthAsync(GrandPrixName);
+
+        RaceDistance = TotalLaps * CircuitLength;
     }
 }

@@ -10,7 +10,7 @@ window.initCircuitMap = function(lat, lon) {
         ],
         view: new ol.View({
             center: ol.proj.fromLonLat([lon, lat]),
-            zoom: 14
+            zoom: 15
         })
     });
     var marker = new ol.Feature({

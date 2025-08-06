@@ -26,15 +26,15 @@ namespace F1StrategySite.Data
 
         private const string filePath = @"Docs\circut_length.csv";
 
-        private static Dictionary<string, float> LoadCircuitLengths(string filePath)
+        private static async Task<Dictionary<string, float>> LoadCircuitLengths(string filePath)
         {
             if (CircuitLengths != null)
             {
                 return CircuitLengths;
             }
 
-            using var reader = new StreamReader(filePath);      
-           
+            using var reader = new StreamReader(filePath);
+
             var config = new CsvConfiguration(System.Globalization.CultureInfo.InvariantCulture)
             {
                 HasHeaderRecord = false
@@ -44,7 +44,7 @@ namespace F1StrategySite.Data
             // Map columns by index since there is no header
             csv.Context.RegisterClassMap<CircuitInfoRecordMap>();
 
-            var circuits = csv.GetRecords<CircuitInfoRecord>().ToList();
+            var circuits = await Task.Run(() => csv.GetRecords<CircuitInfoRecord>().ToList());
             CircuitLengths = circuits.ToDictionary(
                 c => c.Name.Trim(),
                 c => c.Length
@@ -53,11 +53,12 @@ namespace F1StrategySite.Data
             return CircuitLengths;
         }
 
-        public static float GetCircuitLength(string name)
+        public static async Task<float> GetCircuitLengthAsync(string name)
         {
-            var circuitLengths = LoadCircuitLengths(filePath);
-            var key = name.Trim() + " Grand Prix";
-            if (circuitLengths.TryGetValue(key, out var length))
+            if (CircuitLengths == null)
+                await LoadCircuitLengths(filePath);
+            var key = name.Trim();
+            if (CircuitLengths.TryGetValue(key, out var length))
             {
                 return length;
             }
