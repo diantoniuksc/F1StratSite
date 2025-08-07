@@ -11,14 +11,22 @@
     {
         try
         {
+            if ((RaceDate - DateTime.Now).TotalDays > 16)
+            {
+                Error = "Sorry, our pit crew can't predict the weather more than 16 days before lights out! Check back closer to race weekend for your F1 forecast.";
+                IsLoading = false;
+                return;
+            }
             var client = new HttpClient();
             string startDate = RaceDate.AddDays(-2).ToString("yyyy-MM-dd");
             string endDate = RaceDate.ToString("yyyy-MM-dd");
             string url = $"https://api.open-meteo.com/v1/forecast?latitude={Latitude}&longitude={Longitude}&hourly=temperature_2m,precipitation_probability,surface_pressure,wind_speed_10m&start_date={startDate}&end_date={endDate}";
             var response = await client.GetAsync(url);
             response.EnsureSuccessStatusCode();
+
             var json = await response.Content.ReadAsStringAsync();
             Forecast = System.Text.Json.JsonSerializer.Deserialize<WeatherForecast>(json);
+
         }
         catch (Exception ex)
         {
@@ -56,7 +64,7 @@
 }
 else if (!string.IsNullOrEmpty(Error))
 {
-    <p class="text-red-500">Error: @Error</p>
+    <p class="text-white"> @Error</p>
 }
 else if (Forecast?.Hourly != null)
 {

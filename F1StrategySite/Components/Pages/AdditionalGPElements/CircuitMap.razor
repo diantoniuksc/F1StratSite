@@ -7,20 +7,20 @@
     [Parameter] public double Longitude { get; set; }
     [Inject] private IJSRuntime JS { get; set; }
 
-    private double localLat;
-    private double localLon;
+    private double _localLat;
+    private double _localLon;
 
     protected override void OnParametersSet()
     {
-        localLat = Latitude;
-        localLon = Longitude;
+        _localLat = Latitude;
+        _localLon = Longitude;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (localLat != 0 && localLon != 0)
+        if (_localLat != 0 && _localLon != 0)
         {
-            await JS.InvokeVoidAsync("initCircuitMap", localLat, localLon);
+            await JS.InvokeVoidAsync("initCircuitMap", _localLat, _localLon);
         }
     }
 }

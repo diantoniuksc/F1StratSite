@@ -33,14 +33,14 @@
                         </div>
                     </div>
 
-                    <EditForm Model="input" OnValidSubmit="HandleValidSubmit">
+                    <EditForm Model="_input" OnValidSubmit="HandleValidSubmit">
                         <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
                             <label class="flex flex-col min-w-40 flex-1">
                                 <p class="text-white text-base font-medium leading-normal pb-2">Driver ID</p>
                                 <input
                                 placeholder="e.g., 33"
                                 class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#42464d] bg-[#1e2124] focus:border-[#42464d] h-14 placeholder:text-[#a4aab2] p-[15px] text-base font-normal leading-normal"
-                                @bind="input!.Driver_id"
+                                @bind="_input!.Driver_id"
                                 />
                             </label>
                         </div>
@@ -50,7 +50,7 @@
                                 <input
                                 placeholder="e.g., Belgian (without Grand Prix)"
                                 class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#42464d] bg-[#1e2124] focus:border-[#42464d] h-14 placeholder:text-[#a4aab2] p-[15px] text-base font-normal leading-normal"
-                                @bind="circut"
+                                @bind="_circuit"
                                 />
                             </label>
                         </div>
@@ -60,7 +60,7 @@
                                 <input
                                 placeholder="e.g., 2023"
                                 class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#42464d] bg-[#1e2124] focus:border-[#42464d] h-14 placeholder:text-[#a4aab2] p-[15px] text-base font-normal leading-normal"
-                                @bind="input!.Year"
+                                @bind="_input!.Year"
                                 />
                             </label>
                         </div>
@@ -69,7 +69,7 @@
                                 <p class="text-white text-base font-medium leading-normal pb-2">Compound</p>
                                 <select
                                 class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#42464d] bg-[#1e2124] focus:border-[#42464d] h-14 bg-[image:--select-button-svg] placeholder:text-[#a4aab2] p-[15px] text-base font-normal leading-normal"
-                                @bind="input!.Compound">
+                                @bind="_input!.Compound">
                                     <option value="SOFT">Select Compound</option>
                                     <option value="SOFT">SOFT</option>
                                     <option value="MEDIUM">MEDIUM</option>
@@ -84,7 +84,7 @@
                                 <input
                                 placeholder="e.g., 1"
                                 class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#42464d] bg-[#1e2124] focus:border-[#42464d] h-14 placeholder:text-[#a4aab2] p-[15px] text-base font-normal leading-normal"
-                                @bind="input!.Stint_start_lap"
+                                @bind="_input!.Stint_start_lap"
                                 />
                             </label>
                         </div>
@@ -99,16 +99,16 @@
                     <div class="flex flex-col gap-3 p-4">
                         <div class="flex gap-6 justify-between">
                             <p class="text-white text-base font-medium leading-normal">Predicted Laps</p>
-                            <p class="text-white text-sm font-normal leading-normal">@(Math.Round(percent_of_gp, 1).ToString())%</p>
+                            <p class="text-white text-sm font-normal leading-normal">@(Math.Round(_percentOfGp, 1).ToString())%</p>
                         </div>
-                        <div class="rounded bg-[#42464d]"><div class="h-2 rounded bg-white" style="width: @(percent_of_gp.ToString() + "%");"></div></div>
-                        @if(output != null)
+                        <div class="rounded bg-[#42464d]"><div class="h-2 rounded bg-white" style="width: @(_percentOfGp.ToString() + "%");"></div></div>
+                        @if(_output != null)
                         {
-                            <p class="text-[#a4aab2] text-sm font-normal leading-normal">@Math.Round(output.Score, 2) of @total_laps laps</p>
+                            <p class="text-[#a4aab2] text-sm font-normal leading-normal">@Math.Round(_output.Score, 2) of @_totalLaps laps</p>
                         }
                         else
                         {
-                            <p class="text-[#a4aab2] text-sm font-normal leading-normal">? of @(total_laps != null? total_laps : 'n') laps</p>
+                            <p class="text-[#a4aab2] text-sm font-normal leading-normal">? of @(_totalLaps != 0 ? _totalLaps : "n") laps</p>
                         }
                     </div>
                 </div>
@@ -130,20 +130,20 @@
 
 
 @code {
-    private MLModel1.ModelInput? input;
+    private MLModel1.ModelInput? _input;
 
-    private MLModel1.ModelOutput? output;
+    private MLModel1.ModelOutput? _output;
 
-    private string circut;
+    private string _circuit;
 
-    private int total_laps;
-    private float percent_of_gp;
+    private int _totalLaps;
+    private float _percentOfGp;
 
     protected override void OnInitialized()
     {
-        if (input == null)
+        if (_input == null)
         {
-            input = new MLModel1.ModelInput
+            _input = new MLModel1.ModelInput
                 {
                     Driver_id = "VER",
                     Race_length = 7.004f,
@@ -158,25 +158,25 @@
     {
         Console.WriteLine("Form Submitted!");
 
-        input!.Race_length = await ConvertCircutNameToLength();
+        _input!.Race_length = await ConvertCircuitNameToLength();
 
-        Console.WriteLine($"Driver: {input!.Driver_id}, Compound: {input!.Compound}, Circut: {circut}, Circut Length: {input.Race_length}");
-        output = MLModel1.Predict(input!); 
+        Console.WriteLine($"Driver: {_input!.Driver_id}, Compound: {_input!.Compound}, Circuit: {_circuit}, Circuit Length: {_input!.Race_length}");
+        _output = MLModel1.Predict(_input!); 
 
-        if (circut != null)
+        if (_circuit != null)
         {
-            GPInfo grandPrix = new(circut + " Grand Prix", (int)input.Year);
-            total_laps = grandPrix.GetTotalLaps();
+            GPInfo grandPrix = new(_circuit + " Grand Prix", (int)_input.Year);
+            _totalLaps = grandPrix.GetTotalLaps();
         }
 
-        percent_of_gp = output.Score * 100 / total_laps;
+        _percentOfGp = _output.Score * 100 / _totalLaps;
     }
 
-    private async Task<float> ConvertCircutNameToLength()
+    private async Task<float> ConvertCircuitNameToLength()
     {
-        if (circut != null)
+        if (_circuit != null)
         {
-            return await CircutInfo.GetCircuitLengthAsync(circut + " Grand Prix");
+            return await CircutInfo.GetCircuitLengthAsync(_circuit + " Grand Prix");
         }
         else
         {
