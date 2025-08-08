@@ -1,4 +1,6 @@
 using F1StrategySite.Components;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddControllers();
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("PredictionLimiter", limiterOptions =>
+    {
+        limiterOptions.PermitLimit = 10; 
+        limiterOptions.Window = TimeSpan.FromMinutes(1); 
+        limiterOptions.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        limiterOptions.QueueLimit = 2;
+    });
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -20,6 +32,7 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+app.UseRateLimiter();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

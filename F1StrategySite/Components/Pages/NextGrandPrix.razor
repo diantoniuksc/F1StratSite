@@ -1,4 +1,5 @@
-﻿@page "/UpcomingGrandPrix"
+﻿[EnableRateLimiting("PredictionLimiter")]
+@page "/UpcomingGrandPrix"
 @using F1StrategySite.Data
 @using F1StrategySite.Components.Pages.AdditionalGPElements
 @inject PersistentComponentState ApplicationState

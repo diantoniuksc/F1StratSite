@@ -208,5 +208,45 @@ namespace F1StrategySite.Data
 
             return date;
         }
+
+
+
+        public static List<string> DriverIds = new List<string>
+        {
+            "HAM",
+            "VER",
+            "LEC",
+            "NOR",
+            "SAI",
+            "RUS",
+            "ALO",
+            "PER",
+            "PIA",
+            "GAS",
+            "OCO",
+            "TSU",
+            "BOT",
+            "STR",
+            "ALB",
+            "HUL",
+            "SAR",
+            "ZHO",
+            "MAG",
+            "RIC",
+            "COL",
+            "DOO",
+            "ANT",
+            "BOR",
+            "HAD",
+            "LAW",
+            "VET",
+            "RAI",
+            "LAT",
+            "GIO",
+            "SCH",
+            "KUB",
+            "DEV",
+            "BEA"
+        };
     }
 }
