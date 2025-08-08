@@ -110,6 +110,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+        
+        
         _subscription = ApplicationState.RegisterOnPersisting(Persist);
 
         var foundInState = ApplicationState.TryTakeFromJson<string>("GrandPrixName", out var grandPrixName);

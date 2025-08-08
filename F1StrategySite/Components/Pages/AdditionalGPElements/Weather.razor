@@ -1,13 +1,38 @@
+@inject PersistentComponentState ApplicationState
+
 @code {
-        [Parameter] public double Latitude { get; set; }
-        [Parameter] public double Longitude { get; set; }
-        [Parameter] public DateTime RaceDate { get; set; }
+    [Parameter] public double Latitude { get; set; }
+    [Parameter] public double Longitude { get; set; }
+    [Parameter] public DateTime RaceDate { get; set; }
 
     public WeatherForecast Forecast { get; set; }
     public bool IsLoading { get; set; } = true;
     public string Error { get; set; }
+    private PersistingComponentStateSubscription? _subscription;
 
     protected override async Task OnInitializedAsync()
+    {
+        _subscription = ApplicationState.RegisterOnPersisting(Persist);
+
+        var foundAnswer = ApplicationState.TryTakeFromJson<WeatherForecast>("Forecast", out var forecast);
+
+        if (foundAnswer && forecast != null)
+        {
+            Forecast = forecast;
+            IsLoading = false;
+        }
+        else if ((RaceDate - DateTime.Now).TotalDays > 16)
+        {
+            Error = "Sorry, our pit crew can't predict the weather more than 16 days before lights out! Check back closer to race weekend for your F1 forecast.";
+            IsLoading = false;
+        }
+        else
+        {
+            await GetWeatherAsync();
+        }
+    }
+
+    private async Task GetWeatherAsync()
     {
         try
         {
@@ -26,16 +51,23 @@
 
             var json = await response.Content.ReadAsStringAsync();
             Forecast = System.Text.Json.JsonSerializer.Deserialize<WeatherForecast>(json);
-
         }
+
         catch (Exception ex)
         {
             Error = ex.Message;
+            return;
         }
         finally
         {
             IsLoading = false;
         }
+    }
+
+    private Task Persist()
+    {
+        ApplicationState.PersistAsJson<WeatherForecast>("Forecast", Forecast);
+        return Task.CompletedTask;
     }
 
     public class WeatherForecast
@@ -58,13 +90,13 @@
     }
 }
 
-@if (IsLoading)
+@if (!string.IsNullOrEmpty(Error))
+{
+    <p class="text-white">@Error</p>
+}
+else if (IsLoading)
 {
     <p>Loading weather forecast...</p>
-}
-else if (!string.IsNullOrEmpty(Error))
-{
-    <p class="text-white"> @Error</p>
 }
 else if (Forecast?.Hourly != null)
 {

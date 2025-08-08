@@ -33,14 +33,15 @@
                         </div>
                     </div>
 
-                    <EditForm Model="_input" OnValidSubmit="HandleValidSubmit">
+                    <EditForm Model="Input" OnValidSubmit="HandleValidSubmit">
                         <div class="flex max-w-[480px] flex-wrap items-end gap-4 px-4 py-3">
                             <label class="flex flex-col min-w-40 flex-1">
                                 <p class="text-white text-base font-medium leading-normal pb-2">Driver ID</p>
                                 <input
-                                placeholder="e.g., 33"
+                                placeholder="e.g., VER"
                                 class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#42464d] bg-[#1e2124] focus:border-[#42464d] h-14 placeholder:text-[#a4aab2] p-[15px] text-base font-normal leading-normal"
-                                @bind="_input!.Driver_id"
+                                @bind="Input!.Driver_id"
+                                required
                                 />
                             </label>
                         </div>
@@ -50,7 +51,8 @@
                                 <input
                                 placeholder="e.g., Belgian (without Grand Prix)"
                                 class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#42464d] bg-[#1e2124] focus:border-[#42464d] h-14 placeholder:text-[#a4aab2] p-[15px] text-base font-normal leading-normal"
-                                @bind="_circuit"
+                                @bind="Circuit"
+                                required
                                 />
                             </label>
                         </div>
@@ -60,7 +62,8 @@
                                 <input
                                 placeholder="e.g., 2023"
                                 class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#42464d] bg-[#1e2124] focus:border-[#42464d] h-14 placeholder:text-[#a4aab2] p-[15px] text-base font-normal leading-normal"
-                                @bind="_input!.Year"
+                                @bind="Input!.Year"
+                                required
                                 />
                             </label>
                         </div>
@@ -69,8 +72,9 @@
                                 <p class="text-white text-base font-medium leading-normal pb-2">Compound</p>
                                 <select
                                 class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#42464d] bg-[#1e2124] focus:border-[#42464d] h-14 bg-[image:--select-button-svg] placeholder:text-[#a4aab2] p-[15px] text-base font-normal leading-normal"
-                                @bind="_input!.Compound">
-                                    <option value="SOFT">Select Compound</option>
+                                @bind="Input!.Compound">
+                                required
+                                    <option value=null>Select Compound</option>
                                     <option value="SOFT">SOFT</option>
                                     <option value="MEDIUM">MEDIUM</option>
                                     <option value="HARD">HARD</option>
@@ -84,31 +88,32 @@
                                 <input
                                 placeholder="e.g., 1"
                                 class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#42464d] bg-[#1e2124] focus:border-[#42464d] h-14 placeholder:text-[#a4aab2] p-[15px] text-base font-normal leading-normal"
-                                @bind="_input!.Stint_start_lap"
+                                @bind="Input!.Stint_start_lap"
+                                required
                                 />
                             </label>
                         </div>
                         <div class="flex px-4 py-3 justify-start">
                             <button
                             class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-[#dae3f0] text-[#131416] text-sm font-bold leading-normal tracking-[0.015em]"
-                            >
-                                <span class="truncate" OnValidSubmit="HandleValidSubmit">Predict</span>
+                            disabled=@IsLoading>
+                                <span class="truncate">Predict</span>
                             </button>
                         </div>
                     </EditForm>
                     <div class="flex flex-col gap-3 p-4">
                         <div class="flex gap-6 justify-between">
                             <p class="text-white text-base font-medium leading-normal">Predicted Laps</p>
-                            <p class="text-white text-sm font-normal leading-normal">@(Math.Round(_percentOfGp, 1).ToString())%</p>
+                            <p class="text-white text-sm font-normal leading-normal">@(Math.Round(PercentOfGp, 1).ToString())%</p>
                         </div>
-                        <div class="rounded bg-[#42464d]"><div class="h-2 rounded bg-white" style="width: @(_percentOfGp.ToString() + "%");"></div></div>
-                        @if(_output != null)
+                        <div class="rounded bg-[#42464d]"><div class="h-2 rounded bg-white" style="width: @(PercentOfGp.ToString() + "%");"></div></div>
+                        @if(Output != null)
                         {
-                            <p class="text-[#a4aab2] text-sm font-normal leading-normal">@Math.Round(_output.Score, 2) of @_totalLaps laps</p>
+                            <p class="text-[#a4aab2] text-sm font-normal leading-normal">@Math.Round(Output.Score, 2) of @TotalLaps laps</p>
                         }
                         else
                         {
-                            <p class="text-[#a4aab2] text-sm font-normal leading-normal">? of @(_totalLaps != 0 ? _totalLaps : "n") laps</p>
+                            <p class="text-[#a4aab2] text-sm font-normal leading-normal">? of @(TotalLaps != 0 ? TotalLaps : "n") laps</p>
                         }
                     </div>
                 </div>
@@ -130,53 +135,60 @@
 
 
 @code {
-    private MLModel1.ModelInput? _input;
+    public MLModel1.ModelInput? Input { get; set; }
 
-    private MLModel1.ModelOutput? _output;
+    public MLModel1.ModelOutput? Output { get; set; }
 
-    private string _circuit;
+    public string Circuit { get; set; }
 
-    private int _totalLaps;
-    private float _percentOfGp;
+    public int TotalLaps { get; set; }
+    public float PercentOfGp { get; set; }
+    private bool IsLoading { get; set; }
 
     protected override void OnInitialized()
     {
-        if (_input == null)
+        if (Input == null)
         {
-            _input = new MLModel1.ModelInput
-                {
-                    Driver_id = "VER",
-                    Race_length = 7.004f,
-                    Year = 2024,
-                    Compound = "SOFT",
-                    Stint_start_lap = 1
-                };
+            Input = new MLModel1.ModelInput
+            {
+                Driver_id = "VER",
+                Race_length = 7.004f,
+                Year = 2024,
+                Compound = "SOFT",
+                Stint_start_lap = 1
+            };
         }
+        Circuit = "Belgian"; 
     }
 
     private async void HandleValidSubmit()
     {
         Console.WriteLine("Form Submitted!");
 
-        _input!.Race_length = await ConvertCircuitNameToLength();
+        IsLoading = true;
 
-        Console.WriteLine($"Driver: {_input!.Driver_id}, Compound: {_input!.Compound}, Circuit: {_circuit}, Circuit Length: {_input!.Race_length}");
-        _output = MLModel1.Predict(_input!); 
+        Input!.Race_length = await ConvertCircuitNameToLength();
 
-        if (_circuit != null)
+        Console.WriteLine($"Driver: {Input!.Driver_id}, Compound: {Input!.Compound}, Circuit: {Circuit}, Circuit Length: {Input!.Race_length}");
+        Output = MLModel1.Predict(Input!); 
+
+        if (Circuit != null)
         {
-            GPInfo grandPrix = new(_circuit + " Grand Prix", (int)_input.Year);
-            _totalLaps = grandPrix.GetTotalLaps();
+            GPInfo grandPrix = new(Circuit + " Grand Prix", (int)Input.Year);
+            TotalLaps = grandPrix.GetTotalLaps();
         }
 
-        _percentOfGp = _output.Score * 100 / _totalLaps;
+        PercentOfGp = Output.Score * 100 / TotalLaps;
+
+        IsLoading = false;
+        StateHasChanged();
     }
 
     private async Task<float> ConvertCircuitNameToLength()
     {
-        if (_circuit != null)
+        if (Circuit != null)
         {
-            return await CircutInfo.GetCircuitLengthAsync(_circuit + " Grand Prix");
+            return await CircutInfo.GetCircuitLengthAsync(Circuit + " Grand Prix");
         }
         else
         {
