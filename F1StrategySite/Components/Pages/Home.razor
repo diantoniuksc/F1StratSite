@@ -6,14 +6,13 @@
 
 
 <div class="home-root">
-    <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-image-container">
             <img src="https://images.unsplash.com/photo-1500741236341-1b7a0f91f1f6?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Formula 1 car" class="hero-image" />
             <div class="hero-overlay">
                 <h1 class="hero-title">Precision Engineering, Race-Winning Insights</h1>
                 <p class="hero-desc">Dive into the world of motorsports analysis and technology. Explore in-depth race analysis, vehicle dynamics, and the latest innovations shaping the future of racing.</p>
-                <button @onclick="NavigateToPrediction" class="hero-btn">Explore</button>
+                <a href="/prediction">Explore</a>
             </div>
         </div>
     </section>
@@ -87,8 +86,3 @@
         </div>
     </footer>
 </div>
-
-@code
-{
-    public void NavigateToPrediction() => Navigation.NavigateTo("/prediction", forceLoad: true);
-}

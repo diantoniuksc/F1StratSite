@@ -1,5 +1,4 @@
-﻿[EnableRateLimiting("PredictionLimiter")]
-@page "/prediction"
+﻿@page "/prediction"
 @using F1StartegySite.MLModel
 @using Data
 
@@ -83,7 +82,7 @@
                                 <select
                                 class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-white focus:outline-0 focus:ring-0 border border-[#42464d] bg-[#1e2124] focus:border-[#42464d] h-14 bg-[image:--select-button-svg] placeholder:text-[#a4aab2] p-[15px] text-base font-normal leading-normal"
                                 @bind="Input!.Compound">
-                                required
+                                    required
                                     <option value=null>Select Compound</option>
                                     <option value="SOFT">SOFT</option>
                                     <option value="MEDIUM">MEDIUM</option>
@@ -109,6 +108,10 @@
                             disabled=@IsLoading>
                                 <span class="truncate">Predict</span>
                             </button>
+                            @if (RateLimitExceeded)
+                            {
+                                <span class="text-red-500 text-sm font-semibold">Prediction rate limit exceeded. Please wait and try again.</span>
+                            }
                         </div>
                     </EditForm>
                     <div class="flex flex-col gap-3 p-4">
@@ -156,6 +159,9 @@
     private bool IsLoading { get; set; }
 
     private bool isValid;
+    private bool RateLimitExceeded = false;
+    private int PredictionCount = 0;
+    private DateTime PredictionWindowStart = DateTime.MinValue;
     protected override void OnInitialized()
     {
         if (Input == null)
@@ -180,22 +186,46 @@
             Console.WriteLine("Invalid input. Prediction not run.");
             return;
         }
-        
+
         IsLoading = true;
+        RateLimitExceeded = false;
 
-        Input!.Race_length = await ConvertCircuitNameToLength();
-
-        Console.WriteLine($"Driver: {Input!.Driver_id}, Compound: {Input!.Compound}, Circuit: {Circuit}, Circuit Length: {Input!.Race_length}");
-        Output = MLModel1.Predict(Input!); 
-
-        if (Circuit != null)
+        // Client-side rate limiting logic
+        var now = DateTime.UtcNow;
+        if (PredictionWindowStart == DateTime.MinValue || (now - PredictionWindowStart).TotalMinutes >= 1)
         {
-            GPInfo grandPrix = new(Circuit + " Grand Prix", (int)Input.Year);
-            TotalLaps = grandPrix.GetTotalLaps();
+            PredictionWindowStart = now;
+            PredictionCount = 0;
         }
+        if (PredictionCount >= 20)
+        {
+            RateLimitExceeded = true;
+            IsLoading = false;
+            StateHasChanged();
+            return;
+        }
+        PredictionCount++;
 
-        PercentOfGp = Output.Score * 100 / TotalLaps;
-
+        try
+        {
+            Input!.Race_length = await ConvertCircuitNameToLength();
+            Console.WriteLine($"Driver: {Input!.Driver_id}, Compound: {Input!.Compound}, Circuit: {Circuit}, Circuit Length: {Input!.Race_length}");
+            Output = MLModel1.Predict(Input!);
+            if (Circuit != null)
+            {
+                GPInfo grandPrix = new(Circuit + " Grand Prix", (int)Input.Year);
+                TotalLaps = grandPrix.GetTotalLaps();
+            }
+            PercentOfGp = Output.Score * 100 / TotalLaps;
+        }
+        catch (Exception ex)
+        {
+            if (ex.Message.Contains("rate limit", StringComparison.OrdinalIgnoreCase) || ex is InvalidOperationException)
+            {
+                RateLimitExceeded = true;
+                Console.WriteLine("Exeeded!");
+            }
+        }
         IsLoading = false;
         StateHasChanged();
     }
