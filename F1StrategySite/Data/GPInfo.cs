@@ -211,7 +211,7 @@ namespace F1StrategySite.Data
 
 
 
-        public static List<string> DriverIds = new List<string>
+        public static readonly List<string> DriverIds = new List<string>
         {
             "HAM",
             "VER",
