@@ -5,9 +5,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Components\Pages\AdditionalStrategyElements - Copy\**" />
     <Compile Remove="чптапт\**" />
+    <Content Remove="Components\Pages\AdditionalStrategyElements - Copy\**" />
     <Content Remove="чптапт\**" />
+    <EmbeddedResource Remove="Components\Pages\AdditionalStrategyElements - Copy\**" />
     <EmbeddedResource Remove="чптапт\**" />
+    <None Remove="Components\Pages\AdditionalStrategyElements - Copy\**" />
     <None Remove="чптапт\**" />
   </ItemGroup>
   <ItemGroup>
