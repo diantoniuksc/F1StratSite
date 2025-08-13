@@ -1,266 +1,312 @@
-﻿
+﻿@using Data
 @page "/Strategy/{GrandPrixName}"
 
-<div class="max-w-screen-2xl mx-auto p-6 md:p-10">
-    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 pb-6 border-b border-[var(--border-color)]">
-        <div class="mb-6 md:mb-0">
-            <h1 class="text-3xl font-bold text-white tracking-tight">Race Strategy Analysis</h1>
-            <p class="text-md text-[var(--text-secondary)] mono-font">United States Grand Prix // Lap 52/52</p>
-        </div>
-        <div class="flex items-center space-x-6 w-full md:w-auto">
-            <div class="relative flex-grow md:flex-grow-0">
-                <input class="bg-[var(--background-light)] border border-[var(--border-color)] rounded-md py-2.5 pl-10 pr-4 w-full md:w-72 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent text-white placeholder:text-gray-500 transition-all" placeholder="Filter by driver, team..." type="text" />
-                <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-secondary)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-            </div>
-        </div>
-    </header>
 
-    <main class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div class="lg:col-span-8 bg-card p-6 md:p-8">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-bold text-white">Driver Stint Visualizer</h2>
-                <div class="flex items-center space-x-2 text-sm text-[var(--text-secondary)] mono-font">
-                    <span>0 Laps</span>
-                    <div class="w-24 h-0.5 bg-[var(--border-color)]"></div>
-                    <span>52 Laps</span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Race Strategy Overview</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+    <style type="text/tailwindcss">
+        :root {
+        --primary-color: #EF4444;
+        --background-dark: #0A0A0A;
+        --background-light: #141414;
+        --border-color: #262626;
+        --text-primary: #E5E7EB;
+        --text-secondary: #888888;
+        --soft-tyre: #EF4444;
+        --medium-tyre: #F59E0B;
+        --hard-tyre: #E5E7EB;
+        }
+        body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--background-dark);
+        color: var(--text-primary);
+        }
+        h1, h2, h3, h4, h5, h6 {
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+        }
+        .mono-font {
+        font-family: 'Roboto Mono', monospace;
+        }
+        .bg-card {
+        background-color: var(--background-light);
+        border-radius: 0.5rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+        .race-bar-container {
+        flex-grow: 1;
+        position: relative;
+        height: 1rem;
+        background-color: #262626;
+        border-radius: 0.25rem;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        }
+        .tyre-segment {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 0.5rem;
+        font-weight: 500;
+        font-size: 0.75rem;
+        color: var(--background-dark);
+        position: relative;
+        transition: width 0.5s ease-in-out;
+        font-family: 'Roboto Mono', monospace;
+        }
+        .tyre-segment::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: rgba(10, 10, 10, 0.3);
+        }
+        .tyre-segment:last-child::after {
+        display: none;
+        }
+        .pit-stop-marker {
+        position: absolute;
+        top: -6px;
+        bottom: -6px;
+        width: 3px;
+        background-color: var(--text-primary);
+        box-shadow: 0 0 8px rgba(229, 231, 235, 0.3);
+        transform: translateX(-50%);
+        z-index: 10;
+        border-radius: 2px;
+        }
+        .pit-stop-marker::before {
+        content: 'PIT';
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--text-secondary);
+        font-size: 0.625rem;
+        font-family: 'Roboto Mono', monospace;
+        font-weight: 500;
+        }
+    </style>
+</head>
+<body class="p-6 md:p-10">
+    <div class="max-w-screen-2xl mx-auto">
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 pb-6 border-b border-[var(--border-color)]">
+            <div class="mb-6 md:mb-0">
+                <h1 class="text-3xl font-bold text-white tracking-tight">Race Strategy Analysis</h1>
+                <p class="text-md text-[var(--text-secondary)] mono-font">@GrandPrixName</p>
+            </div>
+            <div class="flex items-center space-x-6 w-full md:w-auto">
+                <div class="relative flex-grow md:flex-grow-0">
+                    <input class="bg-[var(--background-light)] border border-[var(--border-color)] rounded-md py-2.5 pl-10 pr-4 w-full md:w-72 focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent text-white placeholder:text-gray-500 transition-all" placeholder="Filter by driver, team..." type="text" />
+                    <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-secondary)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
                 </div>
             </div>
-            <div class="space-y-8">
-                <div class="grid grid-cols-[8rem,1fr,5rem] items-center gap-x-4">
-                    <div class="text-right">
-                        <p class="font-bold text-lg text-white">VERSTAPPEN</p>
-                        <p class="text-sm text-[var(--text-secondary)]">Red Bull Racing</p>
-                    </div>
-                    <div class="race-bar-container">
-                        <div class="tyre-segment bg-[var(--soft-tyre)]" style="width: 63.46%;"><span class="opacity-80">33</span></div>
-                        <div class="pit-stop-marker" style="left: 63.46%;"></div>
-                        <div class="tyre-segment bg-[var(--medium-tyre)]" style="width: 36.54%;"><span class="opacity-80">19</span></div>
-                    </div>
-                    <div class="text-left mono-font text-[var(--text-secondary)] text-sm">
-                        <span class="font-medium text-white">1</span> Stop
+        </header>
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-8 bg-card p-6 md:p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-white">Driver Stint Visualizer</h2>
+                    <div class="flex items-center space-x-2 text-sm text-[var(--text-secondary)] mono-font">
+                        <span>0 Laps</span>
+                        <div class="w-24 h-0.5 bg-[var(--border-color)]"></div>
+                        <span>@totalLaps Laps</span>
                     </div>
                 </div>
-                <div class="grid grid-cols-[8rem,1fr,5rem] items-center gap-x-4">
-                    <div class="text-right">
-                        <p class="font-bold text-lg text-white">NORRIS</p>
-                        <p class="text-sm text-[var(--text-secondary)]">McLaren</p>
-                    </div>
-                    <div class="race-bar-container">
-                        <div class="tyre-segment bg-[var(--medium-tyre)]" style="width: 53.85%;"><span class="opacity-80">28</span></div>
-                        <div class="pit-stop-marker" style="left: 53.85%;"></div>
-                        <div class="tyre-segment bg-[var(--hard-tyre)]" style="width: 46.15%;"><span class="opacity-80">24</span></div>
-                    </div>
-                    <div class="text-left mono-font text-[var(--text-secondary)] text-sm">
-                        <span class="font-medium text-white">1</span> Stop
-                    </div>
-                </div>
-                <div class="grid grid-cols-[8rem,1fr,5rem] items-center gap-x-4">
-                    <div class="text-right">
-                        <p class="font-bold text-lg text-white">HAMILTON</p>
-                        <p class="text-sm text-[var(--text-secondary)]">Mercedes</p>
-                    </div>
-                    <div class="race-bar-container">
-                        <div class="tyre-segment bg-[var(--medium-tyre)]" style="width: 38.46%;"><span class="opacity-80">20</span></div>
-                        <div class="pit-stop-marker" style="left: 38.46%;"></div>
-                        <div class="tyre-segment bg-[var(--medium-tyre)]" style="width: 28.85%;"><span class="opacity-80">15</span></div>
-                        <div class="pit-stop-marker" style="left: 67.31%;"></div>
-                        <div class="tyre-segment bg-[var(--soft-tyre)]" style="width: 32.69%;"><span class="opacity-80">17</span></div>
-                    </div>
-                    <div class="text-left mono-font text-[var(--text-secondary)] text-sm">
-                        <span class="font-medium text-white">2</span> Stops
-                    </div>
-                </div>
-                <div class="grid grid-cols-[8rem,1fr,5rem] items-center gap-x-4">
-                    <div class="text-right">
-                        <p class="font-bold text-lg text-white">PIASTRI</p>
-                        <p class="text-sm text-[var(--text-secondary)]">McLaren</p>
-                    </div>
-                    <div class="race-bar-container">
-                        <div class="tyre-segment bg-[var(--medium-tyre)]" style="width: 55.77%;"><span class="opacity-80">29</span></div>
-                        <div class="pit-stop-marker" style="left: 55.77%;"></div>
-                        <div class="tyre-segment bg-[var(--hard-tyre)]" style="width: 44.23%;"><span class="opacity-80">23</span></div>
-                    </div>
-                    <div class="text-left mono-font text-[var(--text-secondary)] text-sm">
-                        <span class="font-medium text-white">1</span> Stop
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <aside class="lg:col-span-4 space-y-8">
-            <div class="bg-card p-6">
-                <h3 class="text-xl font-bold mb-5 text-white">Tyre Compound Key</h3>
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 mr-3 flex-shrink-0 text-[var(--soft-tyre)]">
-                                <svg fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="50" cy="50" r="48" stroke="#404040" stroke-width="4"></circle>
-                                    <path d="M83.4853 50C83.4853 68.5 68.5 83.4853 50 83.4853C31.5 83.4853 16.5147 68.5 16.5147 50C16.5147 31.5 31.5 16.5147 50 16.5147C68.5 16.5147 83.4853 31.5 83.4853 50Z" stroke="currentColor" stroke-width="12"></path>
-                                    <circle cx="50" cy="50" r="24" stroke="#404040" stroke-width="4"></circle>
-                                    <circle cx="50" cy="50" fill="#141414" r="12"></circle>
-                                </svg>
+                @if (!isLoaded)
+                {
+                    <div class="flex flex-col gap-3 p-4">
+                        <div class="flex gap-6 justify-between">
+                            <p class="text-white text-base font-medium leading-normal">Loading Race Strategies...</p>
+                            <p class="text-white text-sm font-normal leading-normal">Loading</p>
+                        </div>
+                        <div class="rounded bg-[#42464d]">
+                            <div class="h-2 rounded bg-white animate-pulse" style="width: 100%;"></div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    @for(int i = 0; i < StrategiesArr.Length; i++)
+                    {
+                        var strategyOptions = StrategiesArr[i];
+
+                        <div class="grid grid-cols-[8rem,1fr,5rem] items-center gap-x-4">
+                            <div class="text-right">
+                                <p class="font-bold text-lg text-white">@strategyOptions.Strategy</p>
+                                <p class="text-sm text-[var(--text-secondary)]">@strategyOptions.StrategyFrequencyText</p>
                             </div>
-                            <div>
-                                <p class="font-semibold text-white tracking-wide">SOFT</p>
-                                <p class="text-sm text-[var(--text-secondary)] mono-font">C3 Compound</p>
+
+                            <div class="race-bar-container" style="display: flex;">
+                                @for(int j = 0; j < strategyOptions.Strategy.Length; j++)
+                                {
+                                    char compound = strategyOptions.Strategy[j];
+                                    var color = compound == 'S' ? "bg-[var(--soft-tyre)]"
+                                               : compound == 'M' ? "bg-[var(--medium-tyre)]"
+                                               : compound == 'H' ? "bg-[var(--hard-tyre)]"
+                                               : "bg-gray-500";
+
+                                    float width = GetStintWidth(@stintLifes[i][j], i);
+
+                                    <div class="tyre-segment @color" style="width: @width%;">
+                                        <span class="opacity-80">@stintLifes[i][j]</span> 
+                                    </div>
+                                }
+                            </div>
+                            <div class="text-left mono-font text-[var(--text-secondary)] text-sm">
+                                <span class="font-medium text-white">@(strategyOptions.Strategy.Length - 1)</span> Stop
                             </div>
                         </div>
-                        <span class="mono-font text-sm text-[var(--text-secondary)]">Avg. Stint: 18 Laps</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 mr-3 flex-shrink-0 text-[var(--medium-tyre)]">
-                                <svg fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="50" cy="50" r="48" stroke="#404040" stroke-width="4"></circle>
-                                    <path d="M83.4853 50C83.4853 68.5 68.5 83.4853 50 83.4853C31.5 83.4853 16.5147 68.5 16.5147 50C16.5147 31.5 31.5 16.5147 50 16.5147C68.5 16.5147 83.4853 31.5 83.4853 50Z" stroke="currentColor" stroke-width="12"></path>
-                                    <circle cx="50" cy="50" r="24" stroke="#404040" stroke-width="4"></circle>
-                                    <circle cx="50" cy="50" fill="#141414" r="12"></circle>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-white tracking-wide">MEDIUM</p>
-                                <p class="text-sm text-[var(--text-secondary)] mono-font">C2 Compound</p>
-                            </div>
-                        </div>
-                        <span class="mono-font text-sm text-[var(--text-secondary)]">Avg. Stint: 26 Laps</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="w-8 h-8 mr-3 flex-shrink-0 text-[var(--hard-tyre)]">
-                                <svg fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="50" cy="50" r="48" stroke="#404040" stroke-width="4"></circle>
-                                    <path d="M83.4853 50C83.4853 68.5 68.5 83.4853 50 83.4853C31.5 83.4853 16.5147 68.5 16.5147 50C16.5147 31.5 31.5 16.5147 50 16.5147C68.5 16.5147 83.4853 31.5 83.4853 50Z" stroke="currentColor" stroke-width="12"></path>
-                                    <circle cx="50" cy="50" r="24" stroke="#404040" stroke-width="4"></circle>
-                                    <circle cx="50" cy="50" fill="#141414" r="12"></circle>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-white tracking-wide">HARD</p>
-                                <p class="text-sm text-[var(--text-secondary)] mono-font">C1 Compound</p>
-                            </div>
-                        </div>
-                        <span class="mono-font text-sm text-[var(--text-secondary)]">Avg. Stint: 31 Laps</span>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-card p-6">
-                <h3 class="text-xl font-bold mb-5 text-white">Key Race Statistics</h3>
-                <div class="space-y-4">
-                    <div class="flex justify-between items-baseline">
-                        <span class="text-[var(--text-secondary)] text-sm">Total Pit Stops</span>
-                        <span class="font-bold text-2xl text-white mono-font">23</span>
-                    </div>
-                    <div class="flex justify-between items-baseline">
-                        <span class="text-[var(--text-secondary)] text-sm">Most Used Tyre</span>
-                        <span class="font-semibold text-lg text-white mono-font">Medium</span>
-                    </div>
-                    <div class="flex justify-between items-baseline">
-                        <span class="text-[var(--text-secondary)] text-sm">Fastest Pit Stop</span>
-                        <span class="font-semibold text-lg text-white mono-font">2.1s <span class="text-[var(--text-secondary)] text-base">(Red Bull)</span></span>
-                    </div>
-                    <div class="flex justify-between items-baseline">
-                        <span class="text-[var(--text-secondary)] text-sm">Safety Cars / VSC</span>
-                        <span class="font-bold text-2xl text-white mono-font">0</span>
-                    </div>
-                </div>
-            </div>
-        </aside>
-    </main>
-</div>
+                    }
+                }
 
-<style type="text/tailwindcss">
-    :root {
-    --primary-color: #EF4444;
-    --background-dark: #0A0A0A;
-    --background-light: #141414;
-    --border-color: #262626;
-    --text-primary: #E5E7EB;
-    --text-secondary: #888888;
-    --soft-tyre: #EF4444;
-    --medium-tyre: #F59E0B;
-    --hard-tyre: #E5E7EB;
-    }
-    body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--background-dark);
-    color: var(--text-primary);
-    }
-    h1, h2, h3, h4, h5, h6 {
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
-    }
-    .mono-font {
-    font-family: 'Roboto Mono', monospace;
-    }
-    .bg-card {
-    background-color: var(--background-light);
-    border-radius: 0.5rem;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-    }
-    .race-bar-container {
-    flex-grow: 1;
-    position: relative;
-    height: 1rem;
-    background-color: #262626;
-    border-radius: 0.25rem;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    }
-    .tyre-segment {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-right: 0.5rem;
-    font-weight: 500;
-    font-size: 0.75rem;
-    color: var(--background-dark);
-    position: relative;
-    transition: width 0.5s ease-in-out;
-    font-family: 'Roboto Mono', monospace;
-    }
-    .tyre-segment::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background-color: rgba(10, 10, 10, 0.3);
-    }
-    .tyre-segment:last-child::after {
-    display: none;
-    }
-    .pit-stop-marker {
-    position: absolute;
-    top: -6px;
-    bottom: -6px;
-    width: 3px;
-    background-color: var(--text-primary);
-    box-shadow: 0 0 8px rgba(229, 231, 235, 0.3);
-    transform: translateX(-50%);
-    z-index: 10;
-    border-radius: 2px;
-    }
-    .pit-stop-marker::before {
-    content: 'PIT';
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: var(--text-secondary);
-    font-size: 0.625rem;
-    font-family: 'Roboto Mono', monospace;
-    font-weight: 500;
-    }
-</style>
+            </div>
+            <aside class="lg:col-span-4 space-y-8">
+                <div class="bg-card p-6">
+                    <h3 class="text-xl font-bold mb-5 text-white">Tyre Compound Key</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 mr-3 flex-shrink-0 text-[var(--soft-tyre)]">
+                                    <svg fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="50" cy="50" r="48" stroke="#404040" stroke-width="4"></circle>
+                                        <path d="M83.4853 50C83.4853 68.5 68.5 83.4853 50 83.4853C31.5 83.4853 16.5147 68.5 16.5147 50C16.5147 31.5 31.5 16.5147 50 16.5147C68.5 16.5147 83.4853 31.5 83.4853 50Z" stroke="currentColor" stroke-width="12"></path>
+                                        <circle cx="50" cy="50" r="24" stroke="#404040" stroke-width="4"></circle>
+                                        <circle cx="50" cy="50" fill="#141414" r="12"></circle>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-white tracking-wide">SOFT</p>
+                                    <p class="text-sm text-[var(--text-secondary)] mono-font">C3 Compound</p>
+                                </div>
+                            </div>
+                            <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: 18 Laps</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 mr-3 flex-shrink-0 text-[var(--medium-tyre)]">
+                                    <svg fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="50" cy="50" r="48" stroke="#404040" stroke-width="4"></circle>
+                                        <path d="M83.4853 50C83.4853 68.5 68.5 83.4853 50 83.4853C31.5 83.4853 16.5147 68.5 16.5147 50C16.5147 31.5 31.5 16.5147 50 16.5147C68.5 16.5147 83.4853 31.5 83.4853 50Z" stroke="currentColor" stroke-width="12"></path>
+                                        <circle cx="50" cy="50" r="24" stroke="#404040" stroke-width="4"></circle>
+                                        <circle cx="50" cy="50" fill="#141414" r="12"></circle>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-white tracking-wide">MEDIUM</p>
+                                    <p class="text-sm text-[var(--text-secondary)] mono-font">C2 Compound</p>
+                                </div>
+                            </div>
+                            <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal. Stint: 26 Laps</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 mr-3 flex-shrink-0 text-[var(--hard-tyre)]">
+                                    <svg fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="50" cy="50" r="48" stroke="#404040" stroke-width="4"></circle>
+                                        <path d="M83.4853 50C83.4853 68.5 68.5 83.4853 50 83.4853C31.5 83.4853 16.5147 68.5 16.5147 50C16.5147 31.5 31.5 16.5147 50 16.5147C68.5 16.5147 83.4853 31.5 83.4853 50Z" stroke="currentColor" stroke-width="12"></path>
+                                        <circle cx="50" cy="50" r="24" stroke="#404040" stroke-width="4"></circle>
+                                        <circle cx="50" cy="50" fill="#141414" r="12"></circle>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-white tracking-wide">HARD</p>
+                                    <p class="text-sm text-[var(--text-secondary)] mono-font">C1 Compound</p>
+                                </div>
+                            </div>
+                            <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: 31 Laps</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-card p-6">
+                    <h3 class="text-xl font-bold mb-5 text-white">Key Race Statistics</h3>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-[var(--text-secondary)] text-sm">Total Pit Stops</span>
+                            <span class="font-bold text-2xl text-white mono-font">23</span>
+                        </div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-[var(--text-secondary)] text-sm">Most Used Tyre</span>
+                            <span class="font-semibold text-lg text-white mono-font">Medium</span>
+                        </div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-[var(--text-secondary)] text-sm">Fastest Pit Stop</span>
+                            <span class="font-semibold text-lg text-white mono-font">2.1s <span class="text-[var(--text-secondary)] text-base">(Red Bull)</span></span>
+                        </div>
+                        <div class="flex justify-between items-baseline">
+                            <span class="text-[var(--text-secondary)] text-sm">Safety Cars / VSC</span>
+                            <span class="font-bold text-2xl text-white mono-font">0</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </div>
+</body>
+</html>
 
 @code {
     [Parameter]
     public string GrandPrixName { get; set; }
+    private Strategies GpStrategies { get; set; }
+    private Strategies[] StrategiesArr { get; set; } = Array.Empty<Strategies>();
+
+    private int totalLaps;
+    private bool isLoaded = false;
+    private float[][] stintLifes = Array.Empty<float[]>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        GpStrategies = new Strategies(GrandPrixName);
+        StrategiesArr = await GpStrategies.GetStrategiesAsync();
+
+        totalLaps = new GPInfo(GrandPrixName, 2025).GetTotalLaps();
+        await LoadStintLifesAsync();
+        isLoaded = true;
+    }
+
+    //fix stintLifes to driver AND STINT START LAP
+    private async Task LoadStintLifesAsync()
+    {
+        float[] life;
+        stintLifes = new float[StrategiesArr.Length][];
+        for (int i = 0; i < StrategiesArr.Length; i++)
+        {
+            life = await StrategiesArr[i].GetStrategyStintsAsync();
+            stintLifes[i] = new float[life.Length];
+            for (int j = 0; j < StrategiesArr[i].Strategy.Length; j++)
+            {
+                stintLifes[i][j] = life[j];
+            }
+        }
+    }
+
+    private float GetStintWidth(float stintLength, int stintNum)
+    {
+        const int maxWidth = 100;
+        float sumOfstints = 0;
+
+        foreach (var stintLife in stintLifes[stintNum])
+        {
+            sumOfstints += stintLife;
+        }
+
+        float stintWidth = stintLength * (maxWidth / sumOfstints);
+
+        return stintWidth;
+    }
 }
+
