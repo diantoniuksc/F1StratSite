@@ -1,45 +1,4 @@
-﻿
-@code {
-
-    [Parameter]
-    public int Year { get; set; } = 2025;
-
-    [Parameter]
-    public string GrandPrixName { get; set; } 
-
-    private string HardCompound = "";
-    private string MediumCompound = "";
-    private string SoftCompound = "";
-
-    protected override void OnParametersSet()
-    {
-        int roundNum = new GPInfo(GrandPrixName, Year).GetGpNumber();
-
-        var csvPath = "Docs/tyre_compound_allocation_full.csv";
-
-        Year = Year >= 2025 ? 2024 : Year;
-        HardCompound = MediumCompound = SoftCompound = "N/A";
-        if (File.Exists(csvPath))
-        {
-            var lines = File.ReadAllLines(csvPath);
-            foreach (var line in lines.Skip(1)) // skip header
-            {
-                var parts = line.Split(',');
-
-                if (int.TryParse(parts[0], out int year) && int.TryParse(parts[1], out int round))
-                {
-                    if (year == Year && round == roundNum)
-                    {
-                        HardCompound = parts[2];
-                        MediumCompound = parts[3];
-                        SoftCompound = parts[4];
-                        break;
-                    }
-                }
-            }
-        }
-    }
-}
+﻿@using Data
 
 <div class="bg-card p-6">
     <h3 class="text-xl font-bold mb-5 text-white">Tyre Compound Key</h3>
@@ -59,7 +18,7 @@
                     <p class="text-sm text-[var(--text-secondary)] mono-font">Previous Compound: @SoftCompound </p>
                 </div>
             </div>
-            <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: 18 Laps</span>
+            <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: @optimalStints.Soft</span>
         </div>
         <div class="flex items-center justify-between">
             <div class="flex items-center">
@@ -76,7 +35,7 @@
                     <p class="text-sm text-[var(--text-secondary)] mono-font">Previous Compound: @MediumCompound </p>
                 </div>
             </div>
-            <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal. Stint: 26 Laps</span>
+            <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: @optimalStints.Medium</span>
         </div>
         <div class="flex items-center justify-between">
             <div class="flex items-center">
@@ -93,7 +52,68 @@
                     <p class="text-sm text-[var(--text-secondary)] mono-font">Previous Compound: @HardCompound </p>
                 </div>
             </div>
-            <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: 31 Laps</span>
+            <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: @optimalStints.Hard</span>
         </div>
     </div>
 </div>
+
+
+@code {
+
+    [Parameter]
+    public int Year { get; set; } = 2025;
+
+    [Parameter]
+    public string GrandPrixName { get; set; }
+
+    private string HardCompound = "";
+    private string MediumCompound = "";
+    private string SoftCompound = "";
+
+    (int Soft, int Medium, int Hard) optimalStints;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Year = Year >= 2025 ? 2024 : Year;
+        HardCompound = MediumCompound = SoftCompound = "N/A";
+
+        var csvPath = "Docs/tyre_compound_allocation_full.csv";
+        GetCompound(csvPath);
+
+        await GetOptimalStintLength();
+    }
+
+    private void GetCompound(string path)
+    {
+        int roundNum = new GPInfo(GrandPrixName, Year).GetGpNumber();     
+
+        if (File.Exists(path))
+        {
+            var lines = File.ReadAllLines(path);
+            foreach (var line in lines.Skip(1)) // skip header
+            {
+                var parts = line.Split(',');
+
+                if (int.TryParse(parts[0], out int year) && int.TryParse(parts[1], out int round))
+                {
+                    if (year == Year && round == roundNum)
+                    {
+                        HardCompound = parts[2];
+                        MediumCompound = parts[3];
+                        SoftCompound = parts[4];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private async Task GetOptimalStintLength()
+    {
+        float tyreLifeS = await new Strategies(GrandPrixName).GetTyreLifeAsync("SOFT", "VER", 1);
+        float tyreLifeM = await new Strategies(GrandPrixName).GetTyreLifeAsync("MEDIUM", "VER", 1);
+        float tyreLifeH = await new Strategies(GrandPrixName).GetTyreLifeAsync("HARD", "VER", 1);
+
+        optimalStints = ((int)Math.Round(tyreLifeS), (int)Math.Round(tyreLifeM), (int)Math.Round(tyreLifeH));
+    }
+}
