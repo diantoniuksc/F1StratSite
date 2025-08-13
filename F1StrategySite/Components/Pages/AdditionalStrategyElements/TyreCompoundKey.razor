@@ -1,0 +1,99 @@
+﻿
+@code {
+
+    [Parameter]
+    public int Year { get; set; } = 2025;
+
+    [Parameter]
+    public string GrandPrixName { get; set; } 
+
+    private string HardCompound = "";
+    private string MediumCompound = "";
+    private string SoftCompound = "";
+
+    protected override void OnParametersSet()
+    {
+        int roundNum = new GPInfo(GrandPrixName, Year).GetGpNumber();
+
+        var csvPath = "Docs/tyre_compound_allocation_full.csv";
+
+        Year = Year >= 2025 ? 2024 : Year;
+        HardCompound = MediumCompound = SoftCompound = "N/A";
+        if (File.Exists(csvPath))
+        {
+            var lines = File.ReadAllLines(csvPath);
+            foreach (var line in lines.Skip(1)) // skip header
+            {
+                var parts = line.Split(',');
+
+                if (int.TryParse(parts[0], out int year) && int.TryParse(parts[1], out int round))
+                {
+                    if (year == Year && round == roundNum)
+                    {
+                        HardCompound = parts[2];
+                        MediumCompound = parts[3];
+                        SoftCompound = parts[4];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+
+<div class="bg-card p-6">
+    <h3 class="text-xl font-bold mb-5 text-white">Tyre Compound Key</h3>
+    <div class="space-y-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="w-8 h-8 mr-3 flex-shrink-0 text-[var(--soft-tyre)]">
+                    <svg fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" stroke="#404040" stroke-width="4"></circle>
+                        <path d="M83.4853 50C83.4853 68.5 68.5 83.4853 50 83.4853C31.5 83.4853 16.5147 68.5 16.5147 50C16.5147 31.5 31.5 16.5147 50 16.5147C68.5 16.5147 83.4853 31.5 83.4853 50Z" stroke="currentColor" stroke-width="12"></path>
+                        <circle cx="50" cy="50" r="24" stroke="#404040" stroke-width="4"></circle>
+                        <circle cx="50" cy="50" fill="#141414" r="12"></circle>
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-semibold text-white tracking-wide">SOFT</p>
+                    <p class="text-sm text-[var(--text-secondary)] mono-font">Previous Compound: @SoftCompound </p>
+                </div>
+            </div>
+            <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: 18 Laps</span>
+        </div>
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="w-8 h-8 mr-3 flex-shrink-0 text-[var(--medium-tyre)]">
+                    <svg fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" stroke="#404040" stroke-width="4"></circle>
+                        <path d="M83.4853 50C83.4853 68.5 68.5 83.4853 50 83.4853C31.5 83.4853 16.5147 68.5 16.5147 50C16.5147 31.5 31.5 16.5147 50 16.5147C68.5 16.5147 83.4853 31.5 83.4853 50Z" stroke="currentColor" stroke-width="12"></path>
+                        <circle cx="50" cy="50" r="24" stroke="#404040" stroke-width="4"></circle>
+                        <circle cx="50" cy="50" fill="#141414" r="12"></circle>
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-semibold text-white tracking-wide">MEDIUM</p>
+                    <p class="text-sm text-[var(--text-secondary)] mono-font">Previous Compound: @MediumCompound </p>
+                </div>
+            </div>
+            <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal. Stint: 26 Laps</span>
+        </div>
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="w-8 h-8 mr-3 flex-shrink-0 text-[var(--hard-tyre)]">
+                    <svg fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="48" stroke="#404040" stroke-width="4"></circle>
+                        <path d="M83.4853 50C83.4853 68.5 68.5 83.4853 50 83.4853C31.5 83.4853 16.5147 68.5 16.5147 50C16.5147 31.5 31.5 16.5147 50 16.5147C68.5 16.5147 83.4853 31.5 83.4853 50Z" stroke="currentColor" stroke-width="12"></path>
+                        <circle cx="50" cy="50" r="24" stroke="#404040" stroke-width="4"></circle>
+                        <circle cx="50" cy="50" fill="#141414" r="12"></circle>
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-semibold text-white tracking-wide">HARD</p>
+                    <p class="text-sm text-[var(--text-secondary)] mono-font">Previous Compound: @HardCompound </p>
+                </div>
+            </div>
+            <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: 31 Laps</span>
+        </div>
+    </div>
+</div>

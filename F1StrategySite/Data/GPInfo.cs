@@ -78,7 +78,7 @@ namespace F1StrategySite.Data
             return GpInfoDict[GpName];
         }
 
-        private int GetGpNumber()
+        public int GetGpNumber()
         {
             using var reader = new StreamReader(CalendarPath);
             int round = 1;
