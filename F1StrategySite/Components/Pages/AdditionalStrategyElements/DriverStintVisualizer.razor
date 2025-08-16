@@ -2,15 +2,9 @@
 
 @if (!isLoaded)
 {
-    <div class="flex flex-col gap-3 p-4">
-        <div class="flex gap-6 justify-between">
-            <p class="text-white text-base font-medium leading-normal">Loading Race Strategies...</p>
-            <p class="text-white text-sm font-normal leading-normal">Loading</p>
+        <div class="flex items-center justify-center min-h-screen bg-[#111418]">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
         </div>
-        <div class="rounded bg-[#42464d]">
-            <div class="h-2 rounded bg-white animate-pulse" style="width: 100%;"></div>
-        </div>
-    </div>
 }
 else
 {
@@ -51,43 +45,42 @@ else
 
 
 @code {
-    [Parameter]
-    public string GrandPrixName { get; set; }
+    [Parameter] public string GrandPrixName { get; set; }
+    [Parameter] public int TotalLaps { get; set; }
+    [Parameter] public int Year { get; set; } = 2025;
 
-    [Parameter]
-    public int TotalLaps { get; set; }
-
-    [Parameter]
-    public int Year { get; set; } = 2025;
-    
-    public Strategies GpStrategies { get; set; }
     private Strategies[] StrategiesArr { get; set; } = Array.Empty<Strategies>();
-
-    private bool isLoaded = false;
     private float[][] stintLifes = Array.Empty<float[]>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        GpStrategies = new Strategies(GrandPrixName);
-        StrategiesArr = await GpStrategies.GetStrategiesAsync();
-
-        stintLifes = await Strategies.LoadAllStintLivesAsync(StrategiesArr, Year);
-        isLoaded = true;
-    }
+    private bool isLoaded = false;
 
     private (float, float) GetStintWidthScale(float stintLength, int stintNum)
     {
         const int maxWidth = 100;
-        float sumOfstints = 0;
-
-        foreach (var stintLife in stintLifes[stintNum])
-        {
-            sumOfstints += stintLife;
-        }
-
-        float stintWidth = stintLength * (maxWidth / sumOfstints);
-        float scaledStint = stintLength * (TotalLaps / sumOfstints);
-
+        float sumOfStints = stintLifes[stintNum].Sum();
+        float stintWidth = stintLength * (maxWidth / sumOfStints);
+        float scaledStint = stintLength * (TotalLaps / sumOfStints);
         return (stintWidth, scaledStint);
     }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await LoadStrategyDataAsync();
+            StateHasChanged(); 
+        }
+    }
+
+    private async Task LoadStrategyDataAsync()
+    {
+        var gpStrategies = new Strategies(GrandPrixName);
+
+        StrategiesArr = await gpStrategies.GetStrategiesAsync();
+
+        var tasks = StrategiesArr.Select(s => s.GetStrategyStintsAsync(Year));
+        stintLifes = await Task.WhenAll(tasks);
+
+        isLoaded = true;
+    }
 }
+
