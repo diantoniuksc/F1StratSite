@@ -15,7 +15,6 @@
                 </div>
                 <div>
                     <p class="font-semibold text-white tracking-wide">SOFT</p>
-                    <p class="text-sm text-[var(--text-secondary)] mono-font">Previous Compound: @SoftCompound </p>
                 </div>
             </div>
             <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: @optimalStints.Soft</span>
@@ -32,7 +31,6 @@
                 </div>
                 <div>
                     <p class="font-semibold text-white tracking-wide">MEDIUM</p>
-                    <p class="text-sm text-[var(--text-secondary)] mono-font">Previous Compound: @MediumCompound </p>
                 </div>
             </div>
             <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: @optimalStints.Medium</span>
@@ -49,7 +47,6 @@
                 </div>
                 <div>
                     <p class="font-semibold text-white tracking-wide">HARD</p>
-                    <p class="text-sm text-[var(--text-secondary)] mono-font">Previous Compound: @HardCompound </p>
                 </div>
             </div>
             <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: @optimalStints.Hard</span>
@@ -66,46 +63,11 @@
     [Parameter]
     public string GrandPrixName { get; set; }
 
-    private string HardCompound = "";
-    private string MediumCompound = "";
-    private string SoftCompound = "";
-
     (int Soft, int Medium, int Hard) optimalStints;
 
     protected override async Task OnParametersSetAsync()
     {
-        Year = Year >= 2025 ? 2024 : Year;
-        HardCompound = MediumCompound = SoftCompound = "N/A";
-
-        var csvPath = "Docs/tyre_compound_allocation_full.csv";
-        GetCompound(csvPath);
-
         await GetOptimalStintLength();
-    }
-
-    private void GetCompound(string path)
-    {
-        int roundNum = new GPInfo(GrandPrixName, Year).GetGpNumber();     
-
-        if (File.Exists(path))
-        {
-            var lines = File.ReadAllLines(path);
-            foreach (var line in lines.Skip(1)) // skip header
-            {
-                var parts = line.Split(',');
-
-                if (int.TryParse(parts[0], out int year) && int.TryParse(parts[1], out int round))
-                {
-                    if (year == Year && round == roundNum)
-                    {
-                        HardCompound = parts[2];
-                        MediumCompound = parts[3];
-                        SoftCompound = parts[4];
-                        break;
-                    }
-                }
-            }
-        }
     }
 
     private async Task GetOptimalStintLength()

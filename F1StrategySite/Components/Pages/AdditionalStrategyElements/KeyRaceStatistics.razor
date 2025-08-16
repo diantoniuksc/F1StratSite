@@ -1,0 +1,80 @@
+﻿<div class="bg-card p-6">
+    <h3 class="text-xl font-bold mb-5 text-white">Key Race Statistics</h3>
+    <div class="space-y-4">
+        <div class="flex justify-between items-baseline">
+            <span class="text-[var(--text-secondary)] text-sm">Total Pit Stops</span>
+            <span class="font-bold text-2xl text-white mono-font">@_pitstopsCount</span>
+        </div>
+        <div class="flex flex-col space-y-1">
+            <span class="text-[var(--text-secondary)] text-sm">Previous Compound:</span>
+            <span class="mono-font text-sm text-[var(--soft-tyre)]">SOFT: @SoftCompound</span>
+            <span class="mono-font text-sm text-[var(--medium-tyre)]">MEDIUM: @MediumCompound</span>
+            <span class="mono-font text-sm text-[var(--hard-tyre)]">HARD: @HardCompound</span>
+        </div>
+        <div class="flex justify-between items-baseline">
+            <span class="text-[var(--text-secondary)] text-sm">Fastest Pit Stop</span>
+            <span class="font-semibold text-lg text-white mono-font">@_fastestStop <span class="text-[var(--text-secondary)] text-base">(Red Bull)</span></span>
+        </div>
+        <div class="flex justify-between items-baseline">
+            <span class="text-[var(--text-secondary)] text-sm">Longest Pit Stop</span>
+            <span class="font-semibold text-lg text-white mono-font">@_longestStop <span class="text-[var(--text-secondary)] text-base">(Red Bull)</span></span>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public int Year { get; set; } = 2025;
+
+    [Parameter]
+    public string GrandPrixName { get; set; } = string.Empty;
+
+    private string HardCompound = "";
+    private string MediumCompound = "";
+    private string SoftCompound = "";
+
+    private int _pitstopsCount;
+    private float _longestStop;
+    private float _fastestStop;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Year = Year >= 2025 ? 2024 : Year;
+        HardCompound = MediumCompound = SoftCompound = "N/A";
+
+        var csvPath = "Docs/tyre_compound_allocation_full.csv";
+        int roundNum = new GPInfo(GrandPrixName, Year).GetGpNumber();
+        GetCompound(csvPath, roundNum);
+
+        Pitstops pitstops = new Pitstops(roundNum, Year);
+        _pitstopsCount = await pitstops.GetTotalAsync();
+        _longestStop = await pitstops.GetLongestAsync();
+        _fastestStop = await pitstops.GetFastestAsync();
+    }
+
+    private void GetCompound(string path, int roundNumber)
+    {
+       
+
+        if (File.Exists(path))
+        {
+            var lines = File.ReadAllLines(path);
+            foreach (var line in lines.Skip(1)) // skip header
+            {
+                var parts = line.Split(',');
+
+                if (int.TryParse(parts[0], out int year) && int.TryParse(parts[1], out int round))
+                {
+                    if (year == Year && round == roundNumber)
+                    {
+                        HardCompound = parts[2];
+                        MediumCompound = parts[3];
+                        SoftCompound = parts[4];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
