@@ -1,24 +1,27 @@
-﻿using F1StartegySite.MLModel;
+﻿using F1StrategySite.MLModel;
+using System.Collections.Concurrent;
 using System.IO;
 
 namespace F1StrategySite.Data
 {
     public class Strategies(string name, string path = @"Docs\strategies_22-25.csv")
     {
-        public string GPName { get; set; } = name;
-        public string Strategy { get; set; }
-        public int StrategyFrequencyInt { get; set; }
-        public string StrategyFrequencyText { get; set; }
-        public string FilePath { get; set; } = path;
-        private static string StrategiesData { get; set; }
+    public string GPName { get; set; } = name;
+    public string? Strategy { get; set; }
+    public int StrategyFrequencyInt { get; set; }
+    public string? StrategyFrequencyText { get; set; }
+    public string FilePath { get; set; } = path;
+    private static string? StrategiesData { get; set; }
+
+    // ML prediction cache
+    private static readonly ConcurrentDictionary<string, float> TyreLifeCache = new();
 
 
         private async Task GetAllStrategiesAsync()
         {
+            if (StrategiesData != null) return;
             using var reader = new StreamReader(FilePath);
-            var data = await reader.ReadToEndAsync();
-
-            StrategiesData = data;
+            StrategiesData = await reader.ReadToEndAsync();
         }
 
         public async Task<Strategies[]> GetStrategiesAsync()
@@ -57,6 +60,10 @@ namespace F1StrategySite.Data
 
         public async Task<float> GetTyreLifeAsync(string tyreType, string DriverId, int startLap, int year)
         {
+            string key = $"{tyreType}_{DriverId}_{startLap}_{year}_{GPName}";
+            if (TyreLifeCache.TryGetValue(key, out float cachedValue))
+                return cachedValue;
+
             float circuitLength = await CircutInfo.GetCircuitLengthAsync(GPName);
 
             MLModel1.ModelInput input = new()
@@ -69,18 +76,19 @@ namespace F1StrategySite.Data
             };
 
             var prediction = MLModel1.Predict(input);
+            TyreLifeCache[key] = prediction.Score;
             return prediction.Score;
         }
 
         public async Task<float[]> GetStrategyStintsAsync(int year)
         {
-            if(Strategy == null || Strategy.Length == 0)
+            if (string.IsNullOrEmpty(Strategy))
                 throw new InvalidOperationException("Strategy is not set or empty.");
 
             float[] stintLife = new float[Strategy.Length];
             int stintStartLap = 1;
 
-            for(int i = 0; i < Strategy.Length; i++)
+            for (int i = 0; i < Strategy.Length; i++)
             {
                 string tyreType = Strategy[i] switch
                 {
@@ -89,12 +97,19 @@ namespace F1StrategySite.Data
                     'H' => "HARD",
                     _ => throw new ArgumentException("Invalid tyre type")
                 };
-                    
+
                 stintLife[i] = await GetTyreLifeAsync(tyreType, "VER", stintStartLap, year);
                 stintStartLap += (int)Math.Round(stintLife[i]);
             }
 
             return stintLife;
+        }
+
+        // Load all stint lives in parallel across strategies
+        public static async Task<float[][]> LoadAllStintLivesAsync(Strategies[] strategies, int year)
+        {
+            var tasks = strategies.Select(s => s.GetStrategyStintsAsync(year));
+            return await Task.WhenAll(tasks);
         }
     }
 }

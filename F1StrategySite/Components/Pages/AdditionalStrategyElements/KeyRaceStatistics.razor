@@ -48,9 +48,10 @@
         GetCompound(csvPath, roundNum);
 
         Pitstops pitstops = new Pitstops(roundNum, Year);
-        _pitstopsCount = await pitstops.GetTotalAsync();
-        _longestStop = await pitstops.GetLongestAsync();
-        _fastestStop = await pitstops.GetFastestAsync();
+        var stats = await pitstops.GetAllStatsAsync();
+        _pitstopsCount = stats.Total;
+        _longestStop = stats.Longest;
+        _fastestStop = stats.Fastest;
     }
 
     private void GetCompound(string path, int roundNumber)

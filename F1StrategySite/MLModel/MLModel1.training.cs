@@ -11,7 +11,7 @@ using Microsoft.ML.Trainers;
 using Microsoft.ML.Trainers.FastTree;
 using Microsoft.ML.Transforms;
 
-namespace F1StartegySite.MLModel
+namespace F1StrategySite.MLModel
 {
     public partial class MLModel1
     {

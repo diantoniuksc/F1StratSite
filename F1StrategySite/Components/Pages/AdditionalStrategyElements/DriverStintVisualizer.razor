@@ -71,25 +71,8 @@ else
         GpStrategies = new Strategies(GrandPrixName);
         StrategiesArr = await GpStrategies.GetStrategiesAsync();
 
-        await LoadStintLifesAsync();
+        stintLifes = await Strategies.LoadAllStintLivesAsync(StrategiesArr, Year);
         isLoaded = true;
-    }
-
-    //fix stintLifes to driver AND STINT START LAP
-    private async Task LoadStintLifesAsync()
-    {
-        int year = Year;
-        float[] life;
-        stintLifes = new float[StrategiesArr.Length][];
-        for (int i = 0; i < StrategiesArr.Length; i++)
-        {
-            life = await StrategiesArr[i].GetStrategyStintsAsync(year);
-            stintLifes[i] = new float[life.Length];
-            for (int j = 0; j < StrategiesArr[i].Strategy.Length; j++)
-            {
-                stintLifes[i][j] = life[j];
-            }
-        }
     }
 
     private (float, float) GetStintWidthScale(float stintLength, int stintNum)

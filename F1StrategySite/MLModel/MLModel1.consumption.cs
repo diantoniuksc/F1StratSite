@@ -7,7 +7,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace F1StartegySite.MLModel
+namespace F1StrategySite.MLModel
 {
     public partial class MLModel1
     {

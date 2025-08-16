@@ -72,9 +72,11 @@
 
     private async Task GetOptimalStintLength()
     {
-        float tyreLifeS = await new Strategies(GrandPrixName).GetTyreLifeAsync("SOFT", "VER", 1, Year);
-        float tyreLifeM = await new Strategies(GrandPrixName).GetTyreLifeAsync("MEDIUM", "VER", 1, Year);
-        float tyreLifeH = await new Strategies(GrandPrixName).GetTyreLifeAsync("HARD", "VER", 1, Year);
+        Strategies strategies = new Strategies(GrandPrixName);
+
+        float tyreLifeS = await strategies.GetTyreLifeAsync("SOFT", "VER", 1, Year);
+        float tyreLifeM = await strategies.GetTyreLifeAsync("MEDIUM", "VER", 1, Year);
+        float tyreLifeH = await strategies.GetTyreLifeAsync("HARD", "VER", 1, Year);
 
         optimalStints = ((int)Math.Round(tyreLifeS), (int)Math.Round(tyreLifeM), (int)Math.Round(tyreLifeH));
     }

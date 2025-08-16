@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Collections.Concurrent;
 
 namespace F1StrategySite.Data
 {
@@ -8,75 +8,54 @@ namespace F1StrategySite.Data
     {
         public int RoundNumber { get; set; } = roundNum;
         public int Year { get; set; } = year;
-
-        public int Count => PitStopsList?.Count ?? 0;
-        public string Longest => PitStopsList?.OrderByDescending(p => float.Parse(p.Duration)).FirstOrDefault()?.ToString() ?? "No pit stops found.";
-        public string Shortest => PitStopsList?.OrderBy(p => float.Parse(p.Duration)).FirstOrDefault()?.ToString() ?? "No pit stops found.";
-
-        private static readonly HttpClient _httpClient = new HttpClient();
         private List<PitStop> PitStopsList { get; set; }
 
-        public record PitStop(
-            [property: JsonPropertyName("driverId")] string DriverId,
-            [property: JsonPropertyName("lap")] string Lap,
-            [property: JsonPropertyName("stop")] string Stop,
-            [property: JsonPropertyName("time")] string Time,
-            [property: JsonPropertyName("duration")] string Duration
-        );
+        private static readonly HttpClient _httpClient = new();
+        private static readonly ConcurrentDictionary<string, List<PitStop>> PitstopCache = new();
 
-        // Internal DTOs for JSON binding (kept private)
-        private record Root([property: JsonPropertyName("MRData")] MrData MRData);
-        private record MrData([property: JsonPropertyName("RaceTable")] RaceTable RaceTable);
-        private record RaceTable([property: JsonPropertyName("Races")] List<Race> Races);
-        private record Race([property: JsonPropertyName("PitStops")] List<PitStop> PitStops);
+        public record PitStop(string DriverId, string Lap, string Stop, string Time, string Duration);
 
+        private record Root(MRData MRData);
+        private record MRData(RaceTable RaceTable);
+        private record RaceTable(List<Race> Races);
+        private record Race(List<PitStop> PitStops);
 
-        // Fetches pit stop data from the API
-        public async Task GetPitstopsAsync()
+        private async Task LoadPitstopsAsync()
         {
+            string key = $"{Year}_{RoundNumber}";
+            if (PitstopCache.TryGetValue(key, out var cachedList))
+            {
+                PitStopsList = cachedList;
+                return;
+            }
+
             string url = $"http://api.jolpi.ca/ergast/f1/{Year}/{RoundNumber}/pitstops";
             var response = await _httpClient.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
             string jsonResponse = await response.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             var root = JsonSerializer.Deserialize<Root>(jsonResponse, options);
 
-            PitStopsList = root?.MRData?.RaceTable?.Races?.FirstOrDefault()?.PitStops ?? [];
+            PitStopsList = root?.MRData?.RaceTable?.Races?.FirstOrDefault()?.PitStops ?? new List<PitStop>();
+            PitstopCache[key] = PitStopsList;
         }
 
-        public async Task<int> GetTotalAsync()
+        // Single method to get all stats at once
+        public async Task<(int Total, float Longest, float Fastest)> GetAllStatsAsync()
         {
-            if (PitStopsList == null)
-            {
-                await GetPitstopsAsync();
-            }
+            await LoadPitstopsAsync();
+            int total = PitStopsList.Count;
 
-            return PitStopsList.Count;
-        }
+            float longest = PitStopsList.Any()
+                ? PitStopsList.Max(p => float.Parse(p.Duration))
+                : 0;
 
-        public async Task<float> GetLongestAsync()
-        {
-            if (PitStopsList == null)
-            {
-                await GetPitstopsAsync();
-            }
-            var longestPitStop = PitStopsList?.OrderByDescending(p => float.Parse(p.Duration)).FirstOrDefault();
-            return longestPitStop != null ? float.Parse(longestPitStop.Duration) : 0;
-        }
+            float fastest = PitStopsList.Any()
+                ? PitStopsList.Min(p => float.Parse(p.Duration))
+                : 0;
 
-        public async Task<float> GetFastestAsync()
-        {
-            if (PitStopsList == null)
-            {
-                await GetPitstopsAsync();
-            }
-            var shortestPitStop = PitStopsList.OrderBy(p => float.Parse(p.Duration)).FirstOrDefault();
-            return shortestPitStop != null ? float.Parse(shortestPitStop.Duration) : 0;
+            return (total, longest, fastest);
         }
     }
 }
