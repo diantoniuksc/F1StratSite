@@ -126,12 +126,12 @@
                         <span>@totalLaps Laps</span>
                     </div>
                 </div>
-                <DriverStintVisualizer GrandPrixName="@GrandPrixName" TotalLaps="@totalLaps"></DriverStintVisualizer>
+                <DriverStintVisualizer GrandPrixName="@GrandPrixName" TotalLaps="@totalLaps" Year="@Year"></DriverStintVisualizer>
             </div>
 
             <aside class="lg:col-span-4 space-y-8">
-                <TyreCompoundKey GrandPrixName="@GrandPrixName"></TyreCompoundKey>
-                <KeyRaceStatistics GrandPrixName="@GrandPrixName"></KeyRaceStatistics>
+                <TyreCompoundKey GrandPrixName="@GrandPrixName" Year="@Year"></TyreCompoundKey>
+                <KeyRaceStatistics GrandPrixName="@GrandPrixName" Year="@Year"></KeyRaceStatistics>
             </aside>
         </main>
     </div>
@@ -144,10 +144,10 @@
 
     private int totalLaps;
     private bool isLoaded = false;
-
+    protected int Year { get; set; } = 2025;
     protected override void OnInitialized()
     {
-        totalLaps = new GPInfo(GrandPrixName, 2025).GetTotalLaps();
+        totalLaps = new GPInfo(GrandPrixName, Year).GetTotalLaps();
         isLoaded = true;
     }
 }

@@ -1,51 +1,52 @@
 ﻿@using F1StrategySite.Data
 
 @if (!isLoaded)
+{
+    <div class="flex flex-col gap-3 p-4">
+        <div class="flex gap-6 justify-between">
+            <p class="text-white text-base font-medium leading-normal">Loading Race Strategies...</p>
+            <p class="text-white text-sm font-normal leading-normal">Loading</p>
+        </div>
+        <div class="rounded bg-[#42464d]">
+            <div class="h-2 rounded bg-white animate-pulse" style="width: 100%;"></div>
+        </div>
+    </div>
+}
+else
+{
+    @for(int i = 0; i < StrategiesArr.Length; i++)
+    {
+        var strategyOptions = StrategiesArr[i];
+
+        <div class="grid grid-cols-[8rem,1fr,5rem] items-center gap-x-4">
+            <div class="text-right">
+                <p class="font-bold text-lg text-white">@strategyOptions.Strategy</p>
+                <p class="text-sm text-[var(--text-secondary)]">@strategyOptions.StrategyFrequencyText</p>
+            </div>
+
+            <div class="race-bar-container" style="display: flex;">
+                @for(int j = 0; j < strategyOptions.Strategy.Length; j++)
                 {
-                    <div class="flex flex-col gap-3 p-4">
-                        <div class="flex gap-6 justify-between">
-                            <p class="text-white text-base font-medium leading-normal">Loading Race Strategies...</p>
-                            <p class="text-white text-sm font-normal leading-normal">Loading</p>
-                        </div>
-                        <div class="rounded bg-[#42464d]">
-                            <div class="h-2 rounded bg-white animate-pulse" style="width: 100%;"></div>
-                        </div>
+                    char compound = strategyOptions.Strategy[j];
+                    var color = compound == 'S' ? "bg-[var(--soft-tyre)]"
+                               : compound == 'M' ? "bg-[var(--medium-tyre)]"
+                               : compound == 'H' ? "bg-[var(--hard-tyre)]"
+                               : "bg-gray-500";
+
+                    (float width, float scaledStint) = GetStintWidthScale(@stintLifes[i][j], i);
+
+                    <div class="tyre-segment @color" style="width: @width%;">
+                        <span class="opacity-80">@Math.Round(scaledStint)</span> 
                     </div>
                 }
-                else
-                {
-                    @for(int i = 0; i < StrategiesArr.Length; i++)
-                    {
-                        var strategyOptions = StrategiesArr[i];
-
-                        <div class="grid grid-cols-[8rem,1fr,5rem] items-center gap-x-4">
-                            <div class="text-right">
-                                <p class="font-bold text-lg text-white">@strategyOptions.Strategy</p>
-                                <p class="text-sm text-[var(--text-secondary)]">@strategyOptions.StrategyFrequencyText</p>
-                            </div>
-
-                            <div class="race-bar-container" style="display: flex;">
-                                @for(int j = 0; j < strategyOptions.Strategy.Length; j++)
-                                {
-                                    char compound = strategyOptions.Strategy[j];
-                                    var color = compound == 'S' ? "bg-[var(--soft-tyre)]"
-                                               : compound == 'M' ? "bg-[var(--medium-tyre)]"
-                                               : compound == 'H' ? "bg-[var(--hard-tyre)]"
-                                               : "bg-gray-500";
-
-                                    (float width, float scaledStint) = GetStintWidthScale(@stintLifes[i][j], i);
-
-                                    <div class="tyre-segment @color" style="width: @width%;">
-                                        <span class="opacity-80">@Math.Round(scaledStint)</span> 
-                                    </div>
-                                }
-                            </div>
-                            <div class="text-left mono-font text-[var(--text-secondary)] text-sm">
-                                <span class="font-medium text-white">@(strategyOptions.Strategy.Length - 1)</span> Stop
-                            </div>
-                        </div>
-                    }
-                }
+            </div>
+            <div class="text-left mono-font text-[var(--text-secondary)] text-sm">
+                @{ var stopCount = strategyOptions.Strategy.Length - 1; }
+                <span class="font-medium text-white">@stopCount</span> @(stopCount == 1 ? "Stop" : "Stops")
+            </div>
+        </div>
+    }
+}
 
 
 
@@ -56,7 +57,10 @@
     [Parameter]
     public int TotalLaps { get; set; }
 
-    private Strategies GpStrategies { get; set; }
+    [Parameter]
+    public int Year { get; set; } = 2025;
+    
+    public Strategies GpStrategies { get; set; }
     private Strategies[] StrategiesArr { get; set; } = Array.Empty<Strategies>();
 
     private bool isLoaded = false;
@@ -74,11 +78,12 @@
     //fix stintLifes to driver AND STINT START LAP
     private async Task LoadStintLifesAsync()
     {
+        int year = Year;
         float[] life;
         stintLifes = new float[StrategiesArr.Length][];
         for (int i = 0; i < StrategiesArr.Length; i++)
         {
-            life = await StrategiesArr[i].GetStrategyStintsAsync();
+            life = await StrategiesArr[i].GetStrategyStintsAsync(year);
             stintLifes[i] = new float[life.Length];
             for (int j = 0; j < StrategiesArr[i].Strategy.Length; j++)
             {

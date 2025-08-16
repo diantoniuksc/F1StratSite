@@ -14,7 +14,7 @@ namespace F1StrategySite.Data
         public string Shortest => PitStopsList?.OrderBy(p => float.Parse(p.Duration)).FirstOrDefault()?.ToString() ?? "No pit stops found.";
 
         private static readonly HttpClient _httpClient = new HttpClient();
-        private static List<PitStop> PitStopsList { get; set; }
+        private List<PitStop> PitStopsList { get; set; }
 
         public record PitStop(
             [property: JsonPropertyName("driverId")] string DriverId,

@@ -2,7 +2,7 @@
     <h3 class="text-xl font-bold mb-5 text-white">Key Race Statistics</h3>
     <div class="space-y-4">
         <div class="flex justify-between items-baseline">
-            <span class="text-[var(--text-secondary)] text-sm">Total Pit Stops</span>
+            <span class="text-[var(--text-secondary)] text-sm">Total Pit @(_pitstopsCount == 1 ? "Stop" : "Stops")</span>
             <span class="font-bold text-2xl text-white mono-font">@_pitstopsCount</span>
         </div>
         <div class="flex flex-col space-y-1">
@@ -13,11 +13,11 @@
         </div>
         <div class="flex justify-between items-baseline">
             <span class="text-[var(--text-secondary)] text-sm">Fastest Pit Stop</span>
-            <span class="font-semibold text-lg text-white mono-font">@_fastestStop <span class="text-[var(--text-secondary)] text-base">(Red Bull)</span></span>
+            <span class="font-semibold text-lg text-white mono-font">@_fastestStop <span class="text-[var(--text-secondary)] text-base"></span></span>
         </div>
         <div class="flex justify-between items-baseline">
             <span class="text-[var(--text-secondary)] text-sm">Longest Pit Stop</span>
-            <span class="font-semibold text-lg text-white mono-font">@_longestStop <span class="text-[var(--text-secondary)] text-base">(Red Bull)</span></span>
+            <span class="font-semibold text-lg text-white mono-font">@_longestStop <span class="text-[var(--text-secondary)] text-base"></span></span>
         </div>
     </div>
 </div>

@@ -55,30 +55,30 @@ namespace F1StrategySite.Data
             };
         }
 
-        public async Task<float> GetTyreLifeAsync(string tyreType, string driver_id, int start_lap)
+        public async Task<float> GetTyreLifeAsync(string tyreType, string DriverId, int startLap, int year)
         {
             float circuitLength = await CircutInfo.GetCircuitLengthAsync(GPName);
 
             MLModel1.ModelInput input = new()
             {
-                Driver_id = driver_id,
+                Driver_id = DriverId,
                 Race_length = circuitLength,
-                Year = 2025,
+                Year = year,
                 Compound = tyreType,
-                Stint_start_lap = start_lap
+                Stint_start_lap = startLap
             };
 
             var prediction = MLModel1.Predict(input);
             return prediction.Score;
         }
 
-        public async Task<float[]> GetStrategyStintsAsync()
+        public async Task<float[]> GetStrategyStintsAsync(int year)
         {
             if(Strategy == null || Strategy.Length == 0)
                 throw new InvalidOperationException("Strategy is not set or empty.");
 
             float[] stintLife = new float[Strategy.Length];
-
+            int stintStartLap = 1;
 
             for(int i = 0; i < Strategy.Length; i++)
             {
@@ -89,8 +89,9 @@ namespace F1StrategySite.Data
                     'H' => "HARD",
                     _ => throw new ArgumentException("Invalid tyre type")
                 };
-
-                stintLife[i] = await GetTyreLifeAsync(tyreType, "VER", 1);
+                    
+                stintLife[i] = await GetTyreLifeAsync(tyreType, "VER", stintStartLap, year);
+                stintStartLap += (int)Math.Round(stintLife[i]);
             }
 
             return stintLife;
