@@ -2,9 +2,19 @@
 
 @if (!isLoaded)
 {
-        <div class="flex items-center justify-center min-h-screen bg-[#111418]">
-            <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
-        </div>
+    <div class="flex items-center justify-center min-h-screen bg-[#111418]">
+        <img src="https://static.vecteezy.com/system/resources/previews/036/647/604/non_2x/race-car-wheel-free-vector.png" alt="Loading Tyre" class="loading-tyre" style="width: 64px; height: 64px;" />
+        <style>
+            @@keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            .loading-tyre {
+                animation: spin 1s linear infinite;
+                display: inline-block;
+            }
+        </style>
+    </div>
 }
 else
 {

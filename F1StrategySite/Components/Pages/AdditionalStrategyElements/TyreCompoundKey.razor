@@ -1,59 +1,78 @@
 ﻿@using Data
 
-<div class="bg-card p-6">
+@if (!isLoaded)
+{
     <h3 class="text-xl font-bold mb-5 text-white">Tyre Compound Key</h3>
-    <div class="space-y-4">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center">
-                <div class="w-8 h-8 mr-3 flex-shrink-0 text-[var(--soft-tyre)]">
-                    <svg fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="50" cy="50" r="48" stroke="#404040" stroke-width="4"></circle>
-                        <path d="M83.4853 50C83.4853 68.5 68.5 83.4853 50 83.4853C31.5 83.4853 16.5147 68.5 16.5147 50C16.5147 31.5 31.5 16.5147 50 16.5147C68.5 16.5147 83.4853 31.5 83.4853 50Z" stroke="currentColor" stroke-width="12"></path>
-                        <circle cx="50" cy="50" r="24" stroke="#404040" stroke-width="4"></circle>
-                        <circle cx="50" cy="50" fill="#141414" r="12"></circle>
-                    </svg>
+    <div class="flex items-center justify-center min-h-screen bg-[#111418]">
+        <img src="https://static.vecteezy.com/system/resources/previews/036/647/604/non_2x/race-car-wheel-free-vector.png" alt="Loading Tyre" class="loading-tyre" style="width: 64px; height: 64px;" />
+        <style>
+            @@keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            .loading-tyre {
+                animation: spin 1s linear infinite;
+                display: inline-block;
+            }
+        </style>
+    </div>
+}
+else
+{
+    <div class="bg-card p-6">
+        <h3 class="text-xl font-bold mb-5 text-white">Tyre Compound Key</h3>
+        <div class="space-y-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 mr-3 flex-shrink-0 text-[var(--soft-tyre)]">
+                        <svg fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="48" stroke="#404040" stroke-width="4"></circle>
+                            <path d="M83.4853 50C83.4853 68.5 68.5 83.4853 50 83.4853C31.5 83.4853 16.5147 68.5 16.5147 50C16.5147 31.5 31.5 16.5147 50 16.5147C68.5 16.5147 83.4853 31.5 83.4853 50Z" stroke="currentColor" stroke-width="12"></path>
+                            <circle cx="50" cy="50" r="24" stroke="#404040" stroke-width="4"></circle>
+                            <circle cx="50" cy="50" fill="#141414" r="12"></circle>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-white tracking-wide">SOFT</p>
+                    </div>
                 </div>
-                <div>
-                    <p class="font-semibold text-white tracking-wide">SOFT</p>
-                </div>
+                <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: @optimalStints.Soft</span>
             </div>
-            <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: @optimalStints.Soft</span>
-        </div>
-        <div class="flex items-center justify-between">
-            <div class="flex items-center">
-                <div class="w-8 h-8 mr-3 flex-shrink-0 text-[var(--medium-tyre)]">
-                    <svg fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="50" cy="50" r="48" stroke="#404040" stroke-width="4"></circle>
-                        <path d="M83.4853 50C83.4853 68.5 68.5 83.4853 50 83.4853C31.5 83.4853 16.5147 68.5 16.5147 50C16.5147 31.5 31.5 16.5147 50 16.5147C68.5 16.5147 83.4853 31.5 83.4853 50Z" stroke="currentColor" stroke-width="12"></path>
-                        <circle cx="50" cy="50" r="24" stroke="#404040" stroke-width="4"></circle>
-                        <circle cx="50" cy="50" fill="#141414" r="12"></circle>
-                    </svg>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 mr-3 flex-shrink-0 text-[var(--medium-tyre)]">
+                        <svg fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="48" stroke="#404040" stroke-width="4"></circle>
+                            <path d="M83.4853 50C83.4853 68.5 68.5 83.4853 50 83.4853C31.5 83.4853 16.5147 68.5 16.5147 50C16.5147 31.5 31.5 16.5147 50 16.5147C68.5 16.5147 83.4853 31.5 83.4853 50Z" stroke="currentColor" stroke-width="12"></path>
+                            <circle cx="50" cy="50" r="24" stroke="#404040" stroke-width="4"></circle>
+                            <circle cx="50" cy="50" fill="#141414" r="12"></circle>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-white tracking-wide">MEDIUM</p>
+                    </div>
                 </div>
-                <div>
-                    <p class="font-semibold text-white tracking-wide">MEDIUM</p>
-                </div>
+                <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: @optimalStints.Medium</span>
             </div>
-            <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: @optimalStints.Medium</span>
-        </div>
-        <div class="flex items-center justify-between">
-            <div class="flex items-center">
-                <div class="w-8 h-8 mr-3 flex-shrink-0 text-[var(--hard-tyre)]">
-                    <svg fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="50" cy="50" r="48" stroke="#404040" stroke-width="4"></circle>
-                        <path d="M83.4853 50C83.4853 68.5 68.5 83.4853 50 83.4853C31.5 83.4853 16.5147 68.5 16.5147 50C16.5147 31.5 31.5 16.5147 50 16.5147C68.5 16.5147 83.4853 31.5 83.4853 50Z" stroke="currentColor" stroke-width="12"></path>
-                        <circle cx="50" cy="50" r="24" stroke="#404040" stroke-width="4"></circle>
-                        <circle cx="50" cy="50" fill="#141414" r="12"></circle>
-                    </svg>
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="w-8 h-8 mr-3 flex-shrink-0 text-[var(--hard-tyre)]">
+                        <svg fill="none" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="48" stroke="#404040" stroke-width="4"></circle>
+                            <path d="M83.4853 50C83.4853 68.5 68.5 83.4853 50 83.4853C31.5 83.4853 16.5147 68.5 16.5147 50C16.5147 31.5 31.5 16.5147 50 16.5147C68.5 16.5147 83.4853 31.5 83.4853 50Z" stroke="currentColor" stroke-width="12"></path>
+                            <circle cx="50" cy="50" r="24" stroke="#404040" stroke-width="4"></circle>
+                            <circle cx="50" cy="50" fill="#141414" r="12"></circle>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-white tracking-wide">HARD</p>
+                    </div>
                 </div>
-                <div>
-                    <p class="font-semibold text-white tracking-wide">HARD</p>
-                </div>
+                <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: @optimalStints.Hard</span>
             </div>
-            <span class="mono-font text-sm text-[var(--text-secondary)]">Optimal Stint: @optimalStints.Hard</span>
         </div>
     </div>
-</div>
-
+}
 
 @code {
 
@@ -64,10 +83,15 @@
     public string GrandPrixName { get; set; }
 
     (int Soft, int Medium, int Hard) optimalStints;
+    private bool isLoaded = false;
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await GetOptimalStintLength();
+        if (firstRender)
+        {
+            await GetOptimalStintLength();
+            StateHasChanged();
+        }
     }
 
     private async Task GetOptimalStintLength()
@@ -79,5 +103,7 @@
         float tyreLifeH = await strategies.GetTyreLifeAsync("HARD", "VER", 1, Year);
 
         optimalStints = ((int)Math.Round(tyreLifeS), (int)Math.Round(tyreLifeM), (int)Math.Round(tyreLifeH));
+
+        isLoaded = true;
     }
 }

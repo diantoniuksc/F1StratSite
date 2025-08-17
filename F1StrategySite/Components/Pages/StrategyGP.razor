@@ -2,9 +2,9 @@
 @using AdditionalStrategyElements
 @page "/Strategy/{GrandPrixName}"
 
+<script src="/js/rateLimiter.js"></script>
+<script>rateLimitPageLoads(20, 60000, 'strategy:loads');</script>
 
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -136,19 +136,16 @@
         </main>
     </div>
 </body>
-</html>
 
 @code {
     [Parameter]
     public string GrandPrixName { get; set; }
 
     private int totalLaps;
-    private bool isLoaded = false;
     protected int Year { get; set; } = 2025;
     protected override void OnInitialized()
     {
         totalLaps = new GPInfo(GrandPrixName, Year).GetTotalLaps();
-        isLoaded = true;
     }
 }
 

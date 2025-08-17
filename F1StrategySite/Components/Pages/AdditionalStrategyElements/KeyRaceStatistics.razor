@@ -1,27 +1,46 @@
-﻿<div class="bg-card p-6">
-    <h3 class="text-xl font-bold mb-5 text-white">Key Race Statistics</h3>
-    <div class="space-y-4">
-        <div class="flex justify-between items-baseline">
-            <span class="text-[var(--text-secondary)] text-sm">Total Pit @(_pitstopsCount == 1 ? "Stop" : "Stops")</span>
-            <span class="font-bold text-2xl text-white mono-font">@_pitstopsCount</span>
-        </div>
-        <div class="flex flex-col space-y-1">
-            <span class="text-[var(--text-secondary)] text-sm">Previous Compound:</span>
-            <span class="mono-font text-sm text-[var(--soft-tyre)]">SOFT: @SoftCompound</span>
-            <span class="mono-font text-sm text-[var(--medium-tyre)]">MEDIUM: @MediumCompound</span>
-            <span class="mono-font text-sm text-[var(--hard-tyre)]">HARD: @HardCompound</span>
-        </div>
-        <div class="flex justify-between items-baseline">
-            <span class="text-[var(--text-secondary)] text-sm">Fastest Pit Stop</span>
-            <span class="font-semibold text-lg text-white mono-font">@_fastestStop <span class="text-[var(--text-secondary)] text-base"></span></span>
-        </div>
-        <div class="flex justify-between items-baseline">
-            <span class="text-[var(--text-secondary)] text-sm">Longest Pit Stop</span>
-            <span class="font-semibold text-lg text-white mono-font">@_longestStop <span class="text-[var(--text-secondary)] text-base"></span></span>
+﻿@if (!isLoaded)
+{
+   <h3 class="text-xl font-bold mb-5 text-white">Key Race Statistics</h3>
+    <div class="flex items-center justify-center min-h-screen bg-[#111418]">
+        <img src="https://static.vecteezy.com/system/resources/previews/036/647/604/non_2x/race-car-wheel-free-vector.png" alt="Loading Tyre" class="loading-tyre" style="width: 64px; height: 64px;" />
+        <style>
+            @@keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            .loading-tyre {
+                animation: spin 1s linear infinite;
+                display: inline-block;
+            }
+        </style>
+    </div>
+}
+else
+{
+    <div class="bg-card p-6">
+        <h3 class="text-xl font-bold mb-5 text-white">Key Race Statistics</h3>
+        <div class="space-y-4">
+            <div class="flex justify-between items-baseline">
+                <span class="text-[var(--text-secondary)] text-sm">Total Pit @(_pitstopsCount == 1 ? "Stop" : "Stops")</span>
+                <span class="font-bold text-2xl text-white mono-font">@_pitstopsCount</span>
+            </div>
+            <div class="flex flex-col space-y-1">
+                <span class="text-[var(--text-secondary)] text-sm">Previous Compound:</span>
+                <span class="mono-font text-sm text-[var(--soft-tyre)]">SOFT: @SoftCompound</span>
+                <span class="mono-font text-sm text-[var(--medium-tyre)]">MEDIUM: @MediumCompound</span>
+                <span class="mono-font text-sm text-[var(--hard-tyre)]">HARD: @HardCompound</span>
+            </div>
+            <div class="flex justify-between items-baseline">
+                <span class="text-[var(--text-secondary)] text-sm">Fastest Pit Stop</span>
+                <span class="font-semibold text-lg text-white mono-font">@_fastestStop <span class="text-[var(--text-secondary)] text-base"></span></span>
+            </div>
+            <div class="flex justify-between items-baseline">
+                <span class="text-[var(--text-secondary)] text-sm">Longest Pit Stop</span>
+                <span class="font-semibold text-lg text-white mono-font">@_longestStop <span class="text-[var(--text-secondary)] text-base"></span></span>
+            </div>
         </div>
     </div>
-</div>
-
+}
 
 @code {
     [Parameter]
@@ -37,8 +56,18 @@
     private int _pitstopsCount;
     private float _longestStop;
     private float _fastestStop;
+    private bool isLoaded = false;
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            await LoadStats();
+            StateHasChanged();
+        }
+    }
+
+    private async Task LoadStats()
     {
         Year = Year >= 2025 ? 2024 : Year;
         HardCompound = MediumCompound = SoftCompound = "N/A";
@@ -52,6 +81,8 @@
         _pitstopsCount = stats.Total;
         _longestStop = stats.Longest;
         _fastestStop = stats.Fastest;
+
+        isLoaded = true;
     }
 
     private void GetCompound(string path, int roundNumber)

@@ -3,6 +3,8 @@
 
 <PageTitle>Home</PageTitle>
 
+<script src="/js/rateLimiter.js"></script>
+<script>rateLimitPageLoads(20, 60000, 'home:loads');</script>
 
 <div class="home-root">
     <section class="hero-section">

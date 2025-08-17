@@ -1,0 +1,25 @@
+﻿@page "/RateExceeded"
+
+<div class="flex items-center justify-center" style="height: 100%; font-family: 'Space Grotesk', 'Noto Sans', sans-serif;">
+  <div class="text-center w-full" style="height: 40%;">
+    <h2 class="text-white tracking-light text-[28px] font-bold leading-tight px-4 pb-3 pt-5">Rate Limit Exceeded</h2>
+    <p class="text-white text-base font-normal leading-normal pb-3 pt-1 px-4">
+      You have exceeded the maximum number of requests per minute. Please wait a moment before trying again. In the pit lane—back to the track soon!
+    </p>
+  <img src="/Images/Car.png" alt="Car" style="margin: 2rem auto 0 auto; display: block; width: 50%; border-radius: 10px;" />
+  </div>
+</div>
+<script>
+  // Get returnUrl from query string
+  function getQueryParam(name) {
+    const url = window.location.search;
+    const params = new URLSearchParams(url);
+    return params.get(name);
+  }
+  const returnUrl = getQueryParam('returnUrl');
+  setTimeout(function() {
+    if (returnUrl) {
+      window.location.href = decodeURIComponent(returnUrl);
+    }
+  }, 60000);
+</script>
