@@ -86,9 +86,7 @@ else
         var gpStrategies = new Strategies(GrandPrixName);
 
         StrategiesArr = await gpStrategies.GetStrategiesAsync();
-
-        var tasks = StrategiesArr.Select(s => s.GetStrategyStintsAsync(Year));
-        stintLifes = await Task.WhenAll(tasks);
+        stintLifes = await Strategies.LoadAllStintLivesAsync(StrategiesArr, Year);
 
         isLoaded = true;
     }
