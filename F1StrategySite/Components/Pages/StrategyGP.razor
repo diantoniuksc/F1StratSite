@@ -14,7 +14,7 @@
     <style type="text/tailwindcss">
         :root {
         --primary-color: #EF4444;
-        --background-dark: #0A0A0A;
+    --background-dark: #18181c;
         --background-light: #141414;
         --border-color: #262626;
         --text-primary: #E5E7EB;
@@ -23,15 +23,15 @@
         --medium-tyre: #F59E0B;
         --hard-tyre: #E5E7EB;
         }
-        body {
-        font-family: 'Inter', sans-serif;
-        background-color: var(--background-dark);
-        color: var(--text-primary);
-        }
-        h1, h2, h3, h4, h5, h6 {
-        font-family: 'Inter', sans-serif;
-        font-weight: 700;
-        }
+    .strategy-root {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-dark);
+    color: var(--text-primary);
+    }
+    .strategy-root h1, .strategy-root h2, .strategy-root h3, .strategy-root h4, .strategy-root h5, .strategy-root h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    }
         .mono-font {
         font-family: 'Roboto Mono', monospace;
         }
@@ -100,7 +100,7 @@
         }
     </style>
 </head>
-<body class="p-6 md:p-10">
+<div class="strategy-root p-6 md:p-10 min-h-screen">
     <div class="max-w-screen-2xl mx-auto">
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 pb-6 border-b border-[var(--border-color)]">
             <div class="mb-6 md:mb-0">
@@ -135,7 +135,7 @@
             </aside>
         </main>
     </div>
-</body>
+</div>
 
 @code {
     [Parameter]
