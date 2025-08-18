@@ -47,12 +47,29 @@ namespace F1StrategySite.Data
             await LoadPitstopsAsync();
             int total = PitStopsList.Count;
 
+            float ParseDuration(string duration)
+            {
+                if (duration.Contains(":"))
+                {
+                    var parts = duration.Split(":");
+                    if (parts.Length == 2 && float.TryParse(parts[0], out float minutes) && float.TryParse(parts[1], out float seconds))
+                    {
+                        return minutes * 60 + seconds;
+                    }
+                }
+                if (float.TryParse(duration, out float value))
+                {
+                    return value;
+                }
+                return 0;
+            }
+
             float longest = PitStopsList.Any()
-                ? PitStopsList.Max(p => float.Parse(p.Duration))
+                ? PitStopsList.Max(p => ParseDuration(p.Duration))
                 : 0;
 
             float fastest = PitStopsList.Any()
-                ? PitStopsList.Min(p => float.Parse(p.Duration))
+                ? PitStopsList.Min(p => ParseDuration(p.Duration))
                 : 0;
 
             return (total, longest, fastest);
