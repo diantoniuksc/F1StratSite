@@ -248,5 +248,36 @@ namespace F1StrategySite.Data
             "DEV",
             "BEA"
         };
+
+        public static async Task<(string[], string[])> GetSchedule(int year)
+        {
+            string url = $"ergast/f1/{year}/races";
+            using HttpResponseMessage response = await sharedClient.GetAsync(url);
+            response.EnsureSuccessStatusCode();
+
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+
+            using var doc = JsonDocument.Parse(jsonResponse);
+            var races = doc.RootElement
+                .GetProperty("MRData")
+                .GetProperty("RaceTable")
+                .GetProperty("Races");
+
+            var gpNames = new List<string>();
+            var circuits = new List<string>();
+            foreach (var race in races.EnumerateArray())
+            {
+                if (race.TryGetProperty("raceName", out var raceName))
+                {
+                    gpNames.Add(raceName.GetString());
+                }
+
+                if (race.TryGetProperty("Circuit", out var circuit) && circuit.TryGetProperty("circuitName", out var circuitName))
+                {
+                    circuits.Add(circuitName.GetString());
+                }
+            }
+            return (gpNames.ToArray(), circuits.ToArray());
+        }
     }
 }

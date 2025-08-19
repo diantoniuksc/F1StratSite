@@ -9,17 +9,13 @@ namespace F1Test
         public async Task TestPitstopsApi()
         {
             Pitstops pitstops = new(11, 2024);
-            int count = await pitstops.GetTotalAsync();
-            float longest = await pitstops.GetLongestAsync();
-            float shortest = await pitstops.GetFastestAsync();
-
+            var (count, longest, shortest) = await pitstops.GetAllStatsAsync();
 
             int expectedCount = 30;
             float expectedLongest = 33.947f;
             float expectedShortest = 20.978f;
 
-            Assert.AreEqual((expectedCount, expectedLongest, expectedShortest), (count, longest, shortest));
-            
+            Assert.AreEqual((expectedCount, expectedLongest, expectedShortest), (count, longest, shortest));         
         }
     }
 }

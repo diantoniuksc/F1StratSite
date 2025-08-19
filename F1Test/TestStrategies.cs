@@ -39,8 +39,8 @@ namespace F1Test
                 StrategyFrequencyInt = actualDutchStrategies[0].StrategyFrequencyInt
             };
 
-            float[] actualTyreLifes = await actualStrategy.GetStrategyStintsAsync();
-            float[] expectedTyreLifes = { 25.46488f, 37.05885f };
+            float[] actualTyreLifes = await actualStrategy.GetStrategyStintsAsync(2025);
+            float[] expectedTyreLifes = { 25.46488f, 36.566845f };
 
             CollectionAssert.AreEqual(expectedTyreLifes, actualTyreLifes);
         }

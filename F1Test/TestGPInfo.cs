@@ -71,5 +71,14 @@ namespace F1Test
 
             Assert.AreEqual(new DateOnly(2025, 8, 29), date);
         }
+
+        [TestMethod]
+        public async Task TestSchedule()
+        {
+            (string[] scheduleGP, string[] scheduleCircuits) = await GPInfo.GetSchedule(2025);
+
+            Assert.IsNotNull(scheduleGP);
+            Assert.IsNotNull(scheduleCircuits);
+        }
     }
 }
