@@ -1,4 +1,7 @@
 ﻿@using F1StrategySite.Data
+@inject IJSRuntime JS
+
+<script src="/js/centerAfterBars.js"></script>
 
 @if (!isLoaded)
 {
@@ -13,40 +16,51 @@
 }
 else
 {
-    @for(int i = 0; i < StrategiesArr.Length; i++)
-    {
-        var strategyOptions = StrategiesArr[i];
+    <!-- Root defines the total height to split between bars and image -->
+    <div id="strategy-root" class="flex flex-col h-[72vh]">  @* pick a height you like *@
 
-        <div class="grid grid-cols-[8rem,1fr,5rem] items-center gap-x-4">
-            <div class="text-right">
-                <p class="font-bold text-lg text-white">@strategyOptions.Strategy</p>
-                <p class="text-sm text-[var(--text-secondary)]">@strategyOptions.StrategyFrequencyText</p>
-            </div>
+        <!-- Pseudo-container for the colourful bars (natural height) -->
+        <div id="bars-wrapper" class="shrink-0 space-y-3">
+            @for (int i = 0; i < StrategiesArr.Length; i++)
+            {
+                var strategyOptions = StrategiesArr[i];
 
-            <div class="race-bar-container" style="display: flex;">
-                @for(int j = 0; j < strategyOptions.Strategy.Length; j++)
-                {
-                    char compound = strategyOptions.Strategy[j];
-                    var color = compound == 'S' ? "bg-[var(--soft-tyre)]"
-                               : compound == 'M' ? "bg-[var(--medium-tyre)]"
-                               : compound == 'H' ? "bg-[var(--hard-tyre)]"
-                               : "bg-gray-500";
-
-                    (float width, float scaledStint) = GetStintWidthScale(@stintLifes[i][j], i);
-
-                    <div class="tyre-segment @color" style="width: @width%;">
-                        <span class="opacity-80">@Math.Round(scaledStint)</span> 
+                <div class="grid grid-cols-[8rem,1fr,5rem] items-center gap-x-4">
+                    <div class="text-right">
+                        <p class="font-bold text-lg text-white">@strategyOptions.Strategy</p>
+                        <p class="text-sm text-[var(--text-secondary)]">@strategyOptions.StrategyFrequencyText</p>
                     </div>
-                }
-            </div>
-            <div class="text-left mono-font text-[var(--text-secondary)] text-sm">
-                @{ var stopCount = strategyOptions.Strategy.Length - 1; }
-                <span class="font-medium text-white">@stopCount</span> @(stopCount == 1 ? "Stop" : "Stops")
-            </div>
+
+                    <div class="race-bar-container flex">
+                        @for (int j = 0; j < strategyOptions.Strategy.Length; j++)
+                        {
+                            char compound = strategyOptions.Strategy[j];
+                            var color = compound == 'S' ? "bg-[var(--soft-tyre)]"
+                                       : compound == 'M' ? "bg-[var(--medium-tyre)]"
+                                       : compound == 'H' ? "bg-[var(--hard-tyre)]"
+                                       : "bg-gray-500";
+
+                            (float width, float scaledStint) = GetStintWidthScale(@stintLifes[i][j], i);
+
+                            <div class="tyre-segment @color" style="width:@width%;">
+                                <span class="opacity-80">@Math.Round(scaledStint)</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="text-left mono-font text-[var(--text-secondary)] text-sm">
+                        @{ var stopCount = strategyOptions.Strategy.Length - 1; }
+                        <span class="font-medium text-white">@stopCount</span> @(stopCount == 1 ? "Stop" : "Stops")
+                    </div>
+                </div>
+            }
         </div>
-    }
-    <div class="w-full flex justify-center mt-6">
-        <img src="/Images/Pitstop.png" alt="Pitstop" style="width: 80%; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.12);" />
+
+        <!-- Remaining space = (root height − bars height) -->
+        <div class="flex-1 flex items-center justify-center pt-6 overflow-hidden">
+            <img src="/Images/Pitstop.png" alt="Pitstop"
+                 class="w-[80%] max-h-full object-contain rounded-lg shadow-md" />
+        </div>
     </div>
 }
 
@@ -60,6 +74,7 @@ else
     private Strategies[] StrategiesArr { get; set; } = Array.Empty<Strategies>();
     private float[][] stintLifes = Array.Empty<float[]>();
     private bool isLoaded = false;
+    private bool _jsInit = false;
 
     private (float, float) GetStintWidthScale(float stintLength, int stintNum)
     {
@@ -75,7 +90,16 @@ else
         if (firstRender)
         {
             await LoadStrategyDataAsync();
-            StateHasChanged(); 
+            StateHasChanged();
+            return;
+        }
+
+        // After the strategies are rendered, initialize the JS sizing once
+        if (isLoaded && !_jsInit)
+        {
+            _jsInit = true;
+            await JS.InvokeVoidAsync("centerAfterBars.init",
+                "#strategy-root", "#bars-wrapper", "#image-wrapper");
         }
     }
 
