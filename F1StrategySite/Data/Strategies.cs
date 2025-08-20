@@ -38,7 +38,7 @@ namespace F1StrategySite.Data
                         Strategies stratRow = new(GPName);
                         stratRow.Strategy = gpEntry[1];
                         stratRow.StrategyFrequencyInt = Convert.ToInt32(gpEntry[2]);
-                        stratRow.StrategyFrequencyText = MapFrequecyIntStr(stratRow.StrategyFrequencyInt);
+                        stratRow.StrategyFrequencyText = MapFrequencyIntStr(stratRow.StrategyFrequencyInt);
                         return stratRow;
                     }
                     return null;
@@ -47,7 +47,7 @@ namespace F1StrategySite.Data
             return strategiesArr.Where(row => row != null).ToArray();
         }
 
-        private static string MapFrequecyIntStr(int numFrq)
+        private static string MapFrequencyIntStr(int numFrq)
         {
             return numFrq switch
             {
