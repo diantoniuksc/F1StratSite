@@ -119,8 +119,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await PreloadData();
         await LoadSchedule();
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await PreloadData();
     }
 
     private async Task PreloadData()
