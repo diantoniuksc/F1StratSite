@@ -1,4 +1,4 @@
-﻿@using Data
+﻿﻿@using Data
 @page "/Strategy"
 
 <script src="/js/rateLimiter.js"></script>
@@ -16,26 +16,31 @@
     <main class="w-full">
         @if (Races.Count > 0)
         {
-            <div class="relative mb-8">
-                <input class="bg-[var(--background-light)] border border-[var(--border-color)] rounded-md py-3 pl-12 pr-4 w-full focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent text-white placeholder:text-gray-500 transition-all text-lg" placeholder="Search for a Grand Prix..." type="text" />
-                <svg class="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-[var(--text-secondary)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path>
-                </svg>
-            </div>
+                <div class="relative mb-8">
+                       <input @bind="searchQuery" 
+                           @bind:event="oninput"
+                           class="bg-[var(--background-light)] border border-[var(--border-color)] rounded-md py-3 pl-12 pr-4 w-full focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)] focus:border-transparent text-white placeholder:text-gray-500 transition-all text-lg" 
+                           placeholder="Search for a Grand Prix..." 
+                           type="text" />
+
+                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 text-[var(--text-secondary)]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </div>
         }
 
         @if (Races.Count == 0)
         {
-            <div class="flex items-center justify-center h-[40vh] w-full bg-[#18181c]">
-                <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
-            </div>
+                <div class="flex items-center justify-center h-[40vh] w-full bg-[#18181c]">
+                    <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
+                </div>
         }
         else
         {
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                @foreach (var race in Races)
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                @foreach (var race in FilteredRaces)
                 {
-                    @if(race.GrandPrix == "São Paulo Grand Prix")
+                    @if (race.GrandPrix == "São Paulo Grand Prix")
                     {
                         nameNormalized = "Sao Paulo Grand Prix";
                     }
@@ -43,19 +48,19 @@
                     {
                         nameNormalized = race.GrandPrix;
                     }
-                    <a class="bg-card p-6 flex flex-col justify-between group cursor-pointer" 
-                    href="@($"/Strategy/{nameNormalized}")">
-                        <div>
-                            <p class="text-xs mono-font text-[var(--text-secondary)] mb-1">Round @race.Round</p>
-                            <h2 class="text-xl font-bold text-white mb-2">@race.GrandPrix</h2>
-                            <p class="text-sm text-[var(--text-secondary)] mono-font">@race.Circuit</p>
-                        </div>
-                        <div class="mt-6 flex justify-end items-center">
-                            <span class="text-sm text-[var(--text-secondary)] group-hover:text-white transition-colors">View Analysis →</span>
-                        </div>
-                    </a>
+                            <a class="bg-card p-6 flex flex-col justify-between group cursor-pointer" 
+                            href="@($"/Strategy/{nameNormalized}")">
+                                <div>
+                                    <p class="text-xs mono-font text-[var(--text-secondary)] mb-1">Round @race.Round</p>
+                                    <h2 class="text-xl font-bold text-white mb-2">@race.GrandPrix</h2>
+                                    <p class="text-sm text-[var(--text-secondary)] mono-font">@race.Circuit</p>
+                                </div>
+                                <div class="mt-6 flex justify-end items-center">
+                                    <span class="text-sm text-[var(--text-secondary)] group-hover:text-white transition-colors">View Analysis →</span>
+                                </div>
+                            </a>
                 }
-            </div>
+                </div>
         }
     </main>
 
@@ -104,6 +109,14 @@
     private List<RaceInfo> Races { get; set; } = new();
     private string nameNormalized;
 
+    private string searchQuery = string.Empty;
+    private List<RaceInfo> FilteredRaces => string.IsNullOrWhiteSpace(searchQuery)
+        ? Races
+        : Races.Where(r => r.GrandPrix.Contains(searchQuery, StringComparison.OrdinalIgnoreCase)
+                        || r.Circuit.Contains(searchQuery, StringComparison.OrdinalIgnoreCase))
+               .ToList();
+
+
     protected override async Task OnInitializedAsync()
     {
         await PreloadData();
@@ -131,4 +144,3 @@
             .ToList();
     }
 }
-

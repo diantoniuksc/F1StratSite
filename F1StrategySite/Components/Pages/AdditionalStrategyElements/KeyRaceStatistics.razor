@@ -25,11 +25,11 @@ else
                 <span class="mono-font text-sm text-[var(--hard-tyre)]">HARD: @HardCompound</span>
             </div>
             <div class="flex justify-between items-baseline">
-                <span class="text-[var(--text-secondary)] text-sm">Fastest Pit Stop</span>
+                <span class="text-[var(--text-secondary)] text-sm">Fastest Pit Stop (Time in the Pitlane)</span>
                 <span class="font-semibold text-lg text-white mono-font">@_fastestStop <span class="text-[var(--text-secondary)] text-base"></span></span>
             </div>
             <div class="flex justify-between items-baseline">
-                <span class="text-[var(--text-secondary)] text-sm">Longest Pit Stop</span>
+                <span class="text-[var(--text-secondary)] text-sm">Longest Pit Stop (Time in the Pitlane)</span>
                 <span class="font-semibold text-lg text-white mono-font">@_longestStop <span class="text-[var(--text-secondary)] text-base"></span></span>
             </div>
         </div>
@@ -67,7 +67,7 @@ else
         HardCompound = MediumCompound = SoftCompound = "N/A";
 
         var csvPath = "Docs/tyre_compound_allocation_full.csv";
-        int roundNum = new GPInfo(GrandPrixName, Year).GetGpNumber();
+        int roundNum = await new GPInfo(GrandPrixName, Year).GetGpRoundAsync();
         GetCompound(csvPath, roundNum);
 
         Pitstops pitstops = new Pitstops(roundNum, Year);

@@ -10,6 +10,10 @@ namespace F1StrategySite.Data
     {
         private static Dictionary<string, int> GpInfoDict { get; set; }
         protected static Dictionary<DateTime, string> CalendarDict { get; set; }
+
+        private static readonly Dictionary<int, (string[] gpNames, string[] circuits)> ScheduleCache
+            = [];
+
         private string FilePath { get; set; } = path;
         protected string CalendarPath { get; set; } = calPath;
         public string GpName { get; private set; } = name;
@@ -29,7 +33,7 @@ namespace F1StrategySite.Data
 
         private static void LoadGPInfo(string filePath)
         {
-            GpInfoDict = new();
+            GpInfoDict = [];
             using var reader = new StreamReader(filePath);
 
             while (true)
@@ -50,7 +54,7 @@ namespace F1StrategySite.Data
 
         protected void LoadCalendar(string filePath)
         {
-            CalendarDict = new();
+            CalendarDict = [];
             using var reader = new StreamReader(filePath);
 
             while (true)
@@ -78,10 +82,11 @@ namespace F1StrategySite.Data
             return GpInfoDict[GpName];
         }
 
-        public int GetGpNumber()
+       /* public int GetGpNumber()
         {
             using var reader = new StreamReader(CalendarPath);
             int round = 1;
+            int year = 2022;
             while (true)
             {
                 var row = reader.ReadLine();
@@ -90,16 +95,24 @@ namespace F1StrategySite.Data
                 var gpdata = row.Split(',');
                 if (gpdata.Length >= 2)
                 {
+                    int currentYear = Convert.ToInt32(gpdata[1].Split('-')[0]);
+
+                    if(currentYear != year)
+                    {
+                        round = 1;
+                        year = currentYear;
+                    }
                     string name = gpdata[0].Trim();
                     if (name.Equals(GpName.Trim(), StringComparison.OrdinalIgnoreCase))
                     {
+                        Year = year;
                         return round;
                     }
                     round++;
                 }
             }
             throw new Exception($"No GP found for {GpName}");
-        }
+        }*/
 
         private static readonly HttpClient sharedClient = new()
         {
@@ -108,7 +121,7 @@ namespace F1StrategySite.Data
 
         public async Task<string> GetGpInfoAsync()
         {
-            int round = GetGpNumber();
+            int round = await GetGpRoundAsync();
 
             string url = $"ergast/f1/{Year}/{round}";
             using HttpResponseMessage response = await sharedClient.GetAsync(url);
@@ -278,6 +291,26 @@ namespace F1StrategySite.Data
                 }
             }
             return (gpNames.ToArray(), circuits.ToArray());
+        }
+
+        public async Task<int> GetGpRoundAsync()
+        {
+            if (!ScheduleCache.TryGetValue(Year, out var schedule))
+            {
+                schedule = await GetSchedule(Year);
+                ScheduleCache[Year] = schedule;
+            }
+
+            var gpNames = schedule.gpNames;
+
+            // Find the GP round (index + 1)
+            for (int i = 0; i < gpNames.Length; i++)
+            {
+                if (gpNames[i].Trim().Equals(GpName.Trim(), StringComparison.OrdinalIgnoreCase))
+                    return i + 1;
+            }
+
+            throw new Exception($"No GP found for {GpName} in {Year}");
         }
     }
 }
