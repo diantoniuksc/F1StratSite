@@ -1,0 +1,143 @@
+﻿@using Data
+@using AdditionalStrategyElements
+@page "/Strategy/{GrandPrixName}"
+
+<script src="/js/rateLimiter.js"></script>
+<script>rateLimitPageLoads(20, 60000, 'strategy:loads');</script>
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Race Strategy Overview</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+    <style type="text/tailwindcss">
+        :root {
+        --primary-color: #EF4444;
+    --background-dark: #18181c;
+        --background-light: #141414;
+        --border-color: #262626;
+        --text-primary: #E5E7EB;
+        --text-secondary: #888888;
+        --soft-tyre: #EF4444;
+        --medium-tyre: #F59E0B;
+        --hard-tyre: #E5E7EB;
+        }
+    .strategy-root {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-dark);
+    color: var(--text-primary);
+    }
+    .strategy-root h1, .strategy-root h2, .strategy-root h3, .strategy-root h4, .strategy-root h5, .strategy-root h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    }
+        .mono-font {
+        font-family: 'Roboto Mono', monospace;
+        }
+        .bg-card {
+        background-color: var(--background-light);
+        border-radius: 0.5rem;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+        .race-bar-container {
+        flex-grow: 1;
+        position: relative;
+        height: 1rem;
+        background-color: #262626;
+        border-radius: 0.25rem;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        }
+        .tyre-segment {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 0.5rem;
+        font-weight: 500;
+        font-size: 0.75rem;
+        color: var(--background-dark);
+        position: relative;
+        transition: width 0.5s ease-in-out;
+        font-family: 'Roboto Mono', monospace;
+        }
+        .tyre-segment::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background-color: rgba(10, 10, 10, 0.3);
+        }
+        .tyre-segment:last-child::after {
+        display: none;
+        }
+        .pit-stop-marker {
+        position: absolute;
+        top: -6px;
+        bottom: -6px;
+        width: 3px;
+        background-color: var(--text-primary);
+        box-shadow: 0 0 8px rgba(229, 231, 235, 0.3);
+        transform: translateX(-50%);
+        z-index: 10;
+        border-radius: 2px;
+        }
+        .pit-stop-marker::before {
+        content: 'PIT';
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--text-secondary);
+        font-size: 0.625rem;
+        font-family: 'Roboto Mono', monospace;
+        font-weight: 500;
+        }
+    </style>
+</head>
+<div class="strategy-root p-6 md:p-10 min-h-screen">
+    <div class="max-w-screen-2xl mx-auto">
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 pb-6 border-b border-[var(--border-color)]">
+            <div class="mb-6 md:mb-0">
+                <h1 class="text-3xl font-bold text-white tracking-tight">Race Strategy Analysis</h1>
+                <p class="text-md text-[var(--text-secondary)] mono-font">@GrandPrixName</p>
+            </div>
+        </header>
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-8 bg-card p-6 md:p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold text-white">Driver Stint Visualizer</h2>
+                    <div class="flex items-center space-x-2 text-sm text-[var(--text-secondary)] mono-font">
+                        <span>0 Laps</span>
+                        <div class="w-24 h-0.5 bg-[var(--border-color)]"></div>
+                        <span>@totalLaps Laps</span>
+                    </div>
+                </div>
+                <DriverStintVisualizer GrandPrixName="@GrandPrixName" TotalLaps="@totalLaps" Year="@Year"></DriverStintVisualizer>
+            </div>
+
+            <aside class="lg:col-span-4 space-y-9">
+                <TyreCompoundKey GrandPrixName="@GrandPrixName" Year="@Year"></TyreCompoundKey>
+                <KeyRaceStatistics GrandPrixName="@GrandPrixName" Year="@Year"></KeyRaceStatistics>
+            </aside>
+        </main>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string GrandPrixName { get; set; }
+
+    private int totalLaps;
+    protected int Year { get; set; } = 2025;
+    protected override void OnInitialized()
+    {
+        totalLaps = new GPInfo(GrandPrixName, Year).GetTotalLaps();
+    }
+}
+

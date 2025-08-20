@@ -1,4 +1,5 @@
 using F1StrategySite.Components;
+using F1StrategySite.Data;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 

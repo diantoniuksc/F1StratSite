@@ -1,8 +1,10 @@
 ﻿@page "/prediction"
-@using F1StartegySite.MLModel
+@using F1StrategySite.MLModel
 @using Data
 
-<html>
+<script src="/js/rateLimiter.js"></script>
+<script>rateLimitPageLoads(20, 60000, 'prediction:loads');</script>
+
 <head>
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
     <link
@@ -19,7 +21,7 @@
 </head>
 <body>
     <div
-    class="relative flex size-full min-h-screen flex-col bg-[#131416] dark group/design-root overflow-x-hidden"
+    class="relative flex size-full min-h-screen flex-col bg-[#18181c] dark group/design-root overflow-x-hidden"
     style='--select-button-svg: url(&apos;data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2724px%27 height=%2724px%27 fill=%27rgb(164,170,178)%27 viewBox=%270 0 256 256%27%3e%3cpath d=%27M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z%27%3e%3c/path%3e%3c/svg%3e&apos;); font-family: "Space Grotesk", "Noto Sans", sans-serif;'
     >
         <div class="layout-container flex h-full grow flex-col">
@@ -131,8 +133,8 @@
                     </div>
                 </div>
                 <div class="layout-content-container flex flex-col w-[360px]">
-                    <div class="flex w-full grow bg-[#131416] container p-4">
-                        <div class="w-full gap-1 overflow-hidden bg-[#131416] [480px]:gap-2 aspect-[3/2] rounded-xl flex">
+                    <div class="flex w-full grow bg-[#18181c] container p-4">
+                        <div class="w-full gap-1 overflow-hidden bg-[#18181c] [480px]:gap-2 aspect-[3/2] rounded-xl flex">
                             <div
                             class="w-full bg-center bg-no-repeat bg-cover aspect-auto rounded-none flex-1"
                             style='background-image: url("https://images.pexels.com/photos/31204633/pexels-photo-31204633.jpeg");'
@@ -144,8 +146,6 @@
         </div>
     </div>
 </body>
-</html>
-
 
 @code {
     public MLModel1.ModelInput? Input { get; set; }

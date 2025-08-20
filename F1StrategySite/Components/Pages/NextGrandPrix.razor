@@ -3,6 +3,9 @@
 @using F1StrategySite.Components.Pages.AdditionalGPElements
 @inject PersistentComponentState ApplicationState
 
+<script src="/js/rateLimiter.js"></script>
+<script>rateLimitPageLoads(20, 60000, 'nextgp:loads');</script>
+
 <head>
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
     <link
@@ -22,20 +25,20 @@
 
 @if (IsLoading)
 {
-    <div class="flex items-center justify-center min-h-screen bg-[#111418]">
+    <div class="flex items-center justify-center min-h-screen bg-[#18181c]">
         <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
     </div>
 }
 else
 {
-    <div class="relative flex size-full min-h-screen flex-col bg-[#111418] dark group/design-root overflow-x-hidden" style='font-family: "Space Grotesk", "Noto Sans", sans-serif;'>
+        <div class="relative flex size-full min-h-screen flex-col bg-[#18181c] dark group/design-root overflow-x-hidden" style='font-family: "Space Grotesk", "Noto Sans", sans-serif;'>
         <div class="layout-container flex h-full grow flex-col">
             <div class="px-40 flex flex-1 justify-center py-5">
                 <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
                     <div class="container">
                         <div class="[480px]:px-4 [480px]:py-3">
                             <div
-                            class="bg-cover bg-center flex flex-col justify-end overflow-hidden bg-[#111418] [480px]:rounded-xl min-h-[218px]"
+                                class="bg-cover bg-center flex flex-col justify-end overflow-hidden bg-[#18181c] [480px]:rounded-xl min-h-[218px]"
                             style='background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 25%), url(@Photo);'
                             >
                                 <div class="flex p-4"><p class="text-white tracking-light text-[28px] font-bold leading-tight" style="text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 0 2px #000;">@GrandPrixName</p></div>

@@ -5,9 +5,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Components\Pages\AdditionalStrategyElements - Copy\**" />
     <Compile Remove="чптапт\**" />
+    <Content Remove="Components\Pages\AdditionalStrategyElements - Copy\**" />
     <Content Remove="чптапт\**" />
+    <EmbeddedResource Remove="Components\Pages\AdditionalStrategyElements - Copy\**" />
     <EmbeddedResource Remove="чптапт\**" />
+    <None Remove="Components\Pages\AdditionalStrategyElements - Copy\**" />
     <None Remove="чптапт\**" />
   </ItemGroup>
   <ItemGroup>
@@ -16,5 +20,8 @@
     <PackageReference Include="Microsoft.ML" Version="5.0.0-preview.25373.1" />
     <PackageReference Include="Microsoft.ML.FastTree" Version="5.0.0-preview.1.25127.4" />
     <PackageReference Include="PexelsDotNetSDK" Version="1.0.11" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 </Project>
