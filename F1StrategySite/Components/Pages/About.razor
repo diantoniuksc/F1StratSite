@@ -1,0 +1,144 @@
+﻿@page "/about"
+
+<head>
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+  <link
+    rel="stylesheet"
+    as="style"
+    onload="this.rel='stylesheet'"
+    href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Space+Grotesk%3Awght%40400%3B500%3B700"
+  />
+
+  <title>Stitch Design</title>
+  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+</head>
+
+<body
+  class="bg-[var(--background-dark)] text-[var(--text-primary)]"
+  style='font-family: "Space Grotesk", "Noto Sans", sans-serif;'
+>
+  <div class="relative flex min-h-screen flex-col overflow-x-hidden">
+    <div class="layout-container flex h-full grow flex-col">
+      <div class="px-10 md:px-40 flex flex-1 justify-center py-5">
+        <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+
+          <!-- Card Container -->
+          <div class="bg-card p-6 mb-6 relative">
+
+            <!-- Title -->
+            <p class="text-white tracking-light text-[32px] font-bold leading-tight mb-3">
+              Message from the Author
+            </p>
+
+            <!-- Author Image -->
+            <img
+              src="/Images/Author.png"
+              class="w-40 h-40 rounded-full object-cover border border-[#262626] shadow-lg float-right ml-10 -mt-4 mb-4"
+            />
+
+            <!-- Text Content -->
+            <div class="text-white text-base font-normal leading-normal text-justify">
+              <p class="mb-3">
+                <strong>Hello 👋 and thank you for visiting my website!</strong>
+              </p>
+
+              <p class="mb-3">
+                I truly enjoyed creating this project and I hope you’ve enjoyed exploring it
+                as much as I enjoyed building it. The idea of making a website like this came
+                to me long before I even started coding it, which is why it feels so special to me now.
+              </p>
+
+              <p class="mb-3">
+                My name is <strong>Diana (Di for friends)</strong>, and I’m from Ukraine.
+                I’ve been working with <i>C#</i> for over 4 years, and I’ve realized that
+                building digital experiences like this is something I deeply enjoy. I like to
+                think of myself as an artist — my laptop is the brush, and this website is my masterpiece.
+              </p>
+
+              <p class="mb-3">
+                When you first arrive, you’re welcomed by the <i>Home Page</i>, where you can
+                navigate to the <i>Strategy Prediction</i> tool for custom stints. Next, you
+                can visit the <i>Next Grand Prix Page</i>, which features useful information
+                about the upcoming race — from circuit details to Grand Prix insights,
+                beautifully decorated with images provided by the <i>Pexels API</i>, and
+                weather data powered by the <i>api.open-meteo.com</i>.
+              </p>
+
+              <p class="mb-3">
+                But the highlight is the <strong><i>Race Strategy Page</i></strong> — my favorite
+                part of the site. Here you can choose any Grand Prix, click <strong>View Analysis</strong>,
+                and dive into a detailed <i>Race Strategy Analysis</i>. You’ll find visualizations
+                of plausible driver stints, a tire compound key, and last year’s race statistics.
+              </p>
+
+              <p class="mb-3">
+                And now, you’re here — reading this message. <strong>Thank you for being part
+                of the journey 💙💛</strong>
+              </p>
+
+              <p class="mb-3">
+                But this isn’t just about me — it’s about building a community. If you have
+                cool ideas, improvements, suggestions, or want to collaborate, I’d love to hear from you!
+              </p>
+
+              <p class="mb-3">
+                📩 Email:
+                <a class="text-[var(--primary-color)] font-bold" href="mailto:antoniukdin@gmail.com">
+                  antoniukdin@gmail.com
+                </a>
+              </p>
+
+              <p class="mb-3">
+                🔗 LinkedIn:
+                <a
+                  class="text-[var(--primary-color)] font-bold"
+                  href="https://www.linkedin.com/in/d%D1%96ana-antoniuk-067b28362/"
+                >
+                  Diana Antoniuk
+                </a>
+              </p>
+
+              <p class="mb-3">
+                <strong>P.S.</strong> A huge thank you for the help and emotional support from
+                my friends and family — especially Losiash, Hvostyk, My Mother, Sonia, and Elia.
+              </p>
+            </div>
+          </div>
+          <!-- End Card Container -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style type="text/tailwindcss">
+    :root {
+      --primary-color: #EF4444;
+      --background-dark: #0A0A0A;
+      --background-light: #141414;
+      --border-color: #262626;
+      --text-primary: #E5E7EB;
+      --text-secondary: #888888;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background-dark);
+      color: var(--text-primary);
+    }
+
+    .bg-card {
+      background-color: var(--background-light);
+      border-radius: 0.5rem;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                  0 4px 6px -4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .bg-card:hover {
+      transform: translateY(-4px);
+    }
+  </style>
+</body>
