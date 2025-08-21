@@ -1,0 +1,55 @@
+﻿.about-root {
+    /* "local root" variables */
+    --about-primary-color: #EF4444;
+    --about-background-dark: #141414;
+    --about-background-light: #18181C;
+    --about-border-color: #262626;
+    --about-text-primary: #E5E7EB;
+    --about-text-secondary: #888888;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--about-background-light);
+    color: var(--about-text-primary);
+    min-height: 100vh;
+}
+
+/* Card */
+.about-card {
+    background-color: var(--about-background-dark);
+    border-radius: 0.5rem;
+    border: 1px solid var(--about-border-color);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.about-card:hover {
+    transform: translateY(-4px);
+}
+
+/* Title */
+.about-title {
+    color: #fff;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em; /* tracking-light substitute */
+}
+
+/* Text */
+.about-text {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+    .about-text p {
+        margin-bottom: 0.75rem;
+    }
+
+    /* Links inside text */
+    .about-text a {
+        color: var(--about-primary-color);
+        font-weight: 700;
+    }

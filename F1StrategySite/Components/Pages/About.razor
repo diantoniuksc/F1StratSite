@@ -3,34 +3,17 @@
 <script src="/js/rateLimiter.js"></script>
 <script>rateLimitPageLoads(15, 60000, 'aboutpage:loads');</script>
 
-<head>
-  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
-  <link
-    rel="stylesheet"
-    as="style"
-    onload="this.rel='stylesheet'"
-    href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Space+Grotesk%3Awght%40400%3B500%3B700"
-  />
-
-  <title>Stitch Design</title>
-  <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-</head>
-
-<body
-  class="bg-[var(--background-dark)] text-[var(--text-primary)]"
-  style='font-family: "Space Grotesk", "Noto Sans", sans-serif;'
->
+<div class="about-root">
   <div class="relative flex min-h-screen flex-col overflow-x-hidden">
     <div class="layout-container flex h-full grow flex-col">
       <div class="px-10 md:px-40 flex flex-1 justify-center py-5">
         <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
 
           <!-- Card Container -->
-          <div class="bg-card p-6 mb-6 relative">
+          <div class="about-card p-6 mb-6 relative">
 
             <!-- Title -->
-            <p class="text-white tracking-light text-[32px] font-bold leading-tight mb-3">
+            <p class="about-title">
               Message from the Author
             </p>
 
@@ -41,18 +24,15 @@
             />
 
             <!-- Text Content -->
-            <div class="text-white text-base font-normal leading-normal text-justify">
-              <p class="mb-3">
-                <strong>Hello 👋 and thank you for visiting my website!</strong>
-              </p>
+            <div class="about-text">
+              <p><strong>Hello 👋 and thank you for visiting my website!</strong></p>
 
-              <p class="mb-3">
+              <p>
                 I truly enjoyed creating this project and I hope you’ve enjoyed exploring it
                 as much as I enjoyed building it. The idea of making a website like this came
                 to me long before I even started coding it, which is why it feels so special to me now.
               </p>
-
-              <p class="mb-3">
+                            <p class="mb-3">
                 My name is <strong>Diana (Di for friends)</strong>, and I’m from Ukraine.
                 I’ve been working with <i>C#</i> for over 4 years, and I’ve realized that
                 building digital experiences like this is something I deeply enjoy. I like to
@@ -114,34 +94,4 @@
       </div>
     </div>
   </div>
-
-  <style type="text/tailwindcss">
-    :root {
-      --primary-color: #EF4444;
-      --background-dark: #0A0A0A;
-      --background-light: #141414;
-      --border-color: #262626;
-      --text-primary: #E5E7EB;
-      --text-secondary: #888888;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--background-dark);
-      color: var(--text-primary);
-    }
-
-    .bg-card {
-      background-color: var(--background-light);
-      border-radius: 0.5rem;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-                  0 4px 6px -4px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-    }
-
-    .bg-card:hover {
-      transform: translateY(-4px);
-    }
-  </style>
-</body>
+</div>
