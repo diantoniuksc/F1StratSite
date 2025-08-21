@@ -3,88 +3,59 @@
 <script src="/js/rateLimiter.js"></script>
 <script>rateLimitPageLoads(15, 60000, 'contact:loads');</script>
 
-<section class="min-h-screen bg-[var(--background-dark)] text-[var(--text-primary)] flex flex-col items-center justify-center px-6 py-16" style='font-family: "Space Grotesk", "Noto Sans", sans-serif;'>
-    <div class="max-w-2xl w-full bg-card rounded-2xl shadow-lg p-8">
+<section class="contact-root flex flex-col items-center justify-center px-6 py-16">
+    <div class="contact-card max-w-2xl w-full rounded-2xl shadow-lg p-8">
         <h1 class="text-3xl font-bold text-center mb-6">Contact Us</h1>
-        <p class="text-center text-[var(--text-secondary)] mb-8">
-            We'd love to hear from you. Whether you have a question about features, data sources, collaboration ideas or just want to say hello, feel free to reach out.
+        <p class="contact-secondary text-center mb-8">
+            We'd love to hear from you. Whether you have a question about features, data sources, 
+            collaboration ideas or just want to say hello, feel free to reach out.
         </p>
 
         <div class="space-y-6">
             <!-- Email -->
             <div class="flex items-center space-x-4">
-                <img src="Images/Email.png" alt="Email Icon" class="w-10 h-9"/> <!-- bigger icon -->
+                <img src="Images/Email.png" alt="Email Icon" class="w-10 h-9"/>
                 <div>
                     <h2 class="font-semibold text-lg">Email</h2>
-                    <a href="mailto:antoniukdin@gmail.com" class="text-[var(--primary-color)] hover:text-white transition">antoniukdin@gmail.com</a>
+                    <a href="mailto:antoniukdin@gmail.com" class="contact-link">antoniukdin@gmail.com</a>
                 </div>
             </div>
 
             <!-- LinkedIn -->
-            <div class="flex items-center space-x-4">         
-                <img src="Images/Linkedin.png" alt="LinkedIn Icon" class="w-10 h-10"/> <!-- bigger icon -->         
+            <div class="flex items-center space-x-4">
+                <img src="Images/Linkedin.png" alt="LinkedIn Icon" class="w-10 h-10"/>
                 <div>
                     <h2 class="font-semibold text-lg">LinkedIn</h2>
-                    <a href="https://www.linkedin.com/in/d%D1%96ana-antoniuk-067b28362/" target="_blank" class="text-[var(--primary-color)] hover:text-white transition">Diana Antoniuk</a>
+                    <a href="https://www.linkedin.com/in/d%D1%96ana-antoniuk-067b28362/" 
+                       target="_blank" class="contact-link">
+                       Diana Antoniuk
+                    </a>
                 </div>
             </div>
         </div>
 
-
         <!-- Optional contact form -->
-        <div class="mt-10 border-t border-[var(--border-color)] pt-6">
+        <div class="mt-10 border-t border-[var(--contact-border-color)] pt-6">
             <h2 class="text-xl font-semibold mb-4">Send a Message</h2>
-            <form class="space-y-4" onsubmit="return false;"> <!-- prevent default submit -->
+            <form class="space-y-4" onsubmit="return false;">
 
                 <input type="text" placeholder="Your Name" @bind="name"
-                class="w-full p-3 rounded-xl bg-[var(--background-light)] border border-[var(--border-color)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary-color)]" 
-                required />
+                    class="contact-input" required />
 
                 <input type="text" placeholder="Subject" @bind="subject"
-                class="w-full p-3 rounded-xl bg-[var(--background-light)] border border-[var(--border-color)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary-color)]" 
-                required />
+                    class="contact-input" required />
 
                 <textarea rows="5" placeholder="Your Message" @bind="message"
-                class="w-full p-3 rounded-xl bg-[var(--background-light)] border border-[var(--border-color)] text-[var(--text-primary)] focus:outline-none focus:border-[var(--primary-color)]" 
-                required></textarea>
+                    class="contact-input" required></textarea>
 
-                <button type="button" @onclick="SendMail" class="w-full py-3 bg-[var(--primary-color)] hover:bg-red-600 rounded-xl font-semibold text-white transition">
+                <button type="button" @onclick="SendMail" 
+                    class="contact-button">
                     Open E-Mail
                 </button>
             </form>
         </div>
     </div>
 </section>
-
-<style type="text/tailwindcss">
-    :root {
-    --primary-color: #EF4444;
-    --background-dark: #18181c;
-    --background-light: #141414;
-    --border-color: #262626;
-    --text-primary: #E5E7EB;
-    --text-secondary: #888888;
-    }
-
-    body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--background-dark);
-    color: var(--text-primary);
-    }
-
-    .bg-card {
-    background-color: var(--background-light);
-    border-radius: 0.5rem;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -4px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    }
-
-    .bg-card:hover {
-    transform: translateY(-4px);
-    }
-</style>
 
 @code {
     private string name = "";

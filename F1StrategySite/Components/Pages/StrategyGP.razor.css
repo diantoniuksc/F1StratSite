@@ -1,0 +1,59 @@
+﻿.pit-stop-marker {
+    position: absolute;
+    top: -6px;
+    bottom: -6px;
+    width: 3px;
+    background-color: var(--text-primary);
+    box-shadow: 0 0 8px rgba(229, 231, 235, 0.3);
+    transform: translateX(-50%);
+    z-index: 10;
+    border-radius: 2px;
+}
+
+.pit-stop-marker::before {
+    content: 'PIT';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--text-secondary);
+    font-size: 0.625rem;
+    font-family: 'Roboto Mono', monospace;
+    font-weight: 500;
+}
+
+.tyre-segment::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: rgba(10, 10, 10, 0.3);
+}
+
+.tyre-segment:last-child::after {
+    display: none;
+}
+
+.race-bar-container {
+    flex-grow: 1;
+    position: relative;
+    height: 1rem;
+    background-color: #262626;
+    border-radius: 0.25rem;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.strategy-root {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-dark);
+    color: var(--text-primary);
+}
+
+.strategy-root h1, .strategy-root h2, .strategy-root h3, .strategy-root h4, .strategy-root h5, .strategy-root h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+}

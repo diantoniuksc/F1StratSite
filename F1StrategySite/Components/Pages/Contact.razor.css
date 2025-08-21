@@ -1,0 +1,73 @@
+﻿.contact-root {
+    --contact-primary-color: #EF4444;
+    --contact-background-dark: #18181c;
+    --contact-background-light: #141414;
+    --contact-border-color: #262626;
+    --contact-text-primary: #E5E7EB;
+    --contact-text-secondary: #888888;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--contact-background-dark);
+    color: var(--contact-text-primary);
+    min-height: 100vh;
+}
+
+/* Card container */
+.contact-card {
+    background-color: var(--contact-background-light);
+    border: 1px solid var(--contact-border-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-4px);
+}
+
+/* Secondary text */
+.contact-secondary {
+    color: var(--contact-text-secondary);
+}
+
+/* Links */
+.contact-link {
+    color: var(--contact-primary-color);
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+    .contact-link:hover {
+        color: white;
+    }
+
+/* Inputs */
+.contact-input {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    background-color: var(--contact-background-light);
+    border: 1px solid var(--contact-border-color);
+    color: var(--contact-text-primary);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.contact-input:focus {
+    border-color: var(--contact-primary-color);
+}
+
+/* Button */
+.contact-button {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    background-color: var(--contact-primary-color);
+    color: white;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.contact-button:hover {
+    background-color: #dc2626; /* darker red */
+}

@@ -1,0 +1,12 @@
+﻿.bg-card {
+    background-color: var(--background-light);
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.bg-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-4px);
+}

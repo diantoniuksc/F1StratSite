@@ -44,12 +44,11 @@
     text-align: justify;
 }
 
-    .about-text p {
-        margin-bottom: 0.75rem;
-    }
+.about-text p {
+    margin-bottom: 0.75rem;
+}
 
-    /* Links inside text */
-    .about-text a {
-        color: var(--about-primary-color);
-        font-weight: 700;
-    }
+.about-text a {
+    color: var(--about-primary-color);
+    font-weight: 700;
+}
