@@ -1,0 +1,93 @@
+﻿@page "/terms"
+
+<script src="/js/rateLimiter.js"></script>
+<script>rateLimitPageLoads(15, 60000, 'terms:loads');</script>
+
+<div class="max-w-3xl mx-auto p-6 md:p-10 text-white text-justify">
+    <h1 class="text-4xl font-bold mb-6">Terms of Service</h1>
+    <p class="text-sm text-[var(--text-secondary)] mb-10">Last updated: August 21, 2025</p>
+
+    <div class="space-y-6 text-lg leading-relaxed">
+        <section>
+            <h2 class="text-2xl font-semibold mb-2">1. Acceptance of Terms</h2>
+            <p>
+                By accessing and using this website ("Service"), you agree to be bound by these Terms of Service 
+                and all applicable laws and regulations. If you do not agree, you may not use the Service.
+            </p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-semibold mb-2">2. Use of the Service</h2>
+            <p>
+                This Service is provided for personal and non-commercial use only. 
+                You agree not to misuse the Service, attempt to bypass security measures, or overload the system 
+                (including automated requests or scraping).
+            </p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-semibold mb-2">3. Intellectual Property</h2>
+            <p>
+              Unless otherwise stated, all original content, features, and functionality on this website 
+              (including custom code, design, and text) are the property of Diana Antoniuk and are protected by copyright laws.  
+              <br />
+              Some images, graphics, and data are provided under license or via third-party APIs, 
+              and remain the intellectual property of their respective owners.  
+              <br />
+              <strong>© 2025 Diana Antoniuk. All rights reserved.</strong>
+            </p>
+
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-semibold mb-2">4. Rate Limiting & Local Storage</h2>
+            <p>
+                To protect the stability of the Service, rate limiting is enforced. 
+                This is achieved by storing minimal data (timestamps) in your browser’s localStorage. 
+                This data is only used for security and functionality purposes and is not shared with third parties.
+            </p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-semibold mb-2">5. External Links</h2>
+            <p>
+                The Service may contain links to third-party websites. 
+                I am not responsible for the content, policies, or practices of any external sites.
+            </p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-semibold mb-2">6. Disclaimer</h2>
+            <p>
+                The Service is provided "as is" without warranties of any kind, either express or implied.  
+                I do not guarantee the accuracy, completeness, or reliability of the content provided.  
+                Use the Service at your own risk.
+            </p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-semibold mb-2">7. Limitation of Liability</h2>
+            <p>
+                To the maximum extent permitted by law, I shall not be liable for any damages arising 
+                from the use or inability to use the Service.
+            </p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-semibold mb-2">8. Changes to Terms</h2>
+            <p>
+                I reserve the right to update or modify these Terms at any time. 
+                Updates will be reflected on this page with the "Last updated" date.
+            </p>
+        </section>
+
+        <section>
+            <h2 class="text-2xl font-semibold mb-2">9. Contact</h2>
+            <p>
+                If you have any questions about these Terms, feel free to reach out:
+                <br />
+                📩 <a href="mailto:antoniukdin@gmail.com" class="text-[var(--primary-color)]">antoniukdin@gmail.com</a>
+            </p>
+        </section>
+    </div>
+</div>

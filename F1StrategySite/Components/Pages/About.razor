@@ -1,5 +1,8 @@
 ﻿@page "/about"
 
+<script src="/js/rateLimiter.js"></script>
+<script>rateLimitPageLoads(15, 60000, 'aboutpage:loads');</script>
+
 <head>
   <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
   <link
