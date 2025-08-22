@@ -1,71 +1,117 @@
 ﻿@page "/"
-@inject NavigationManager Navigation
+@inject NavigationManager NavManager
 
-<PageTitle>Home</PageTitle>
 
-<script src="/js/rateLimiter.js"></script>
-<script>rateLimitPageLoads(15, 60000, 'home:loads');</script>
-
-<div class="home-root">
-    <section class="hero-section">
-        <div class="hero-image-container">
-            <img src="https://images.unsplash.com/photo-1500741236341-1b7a0f91f1f6?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Formula 1 car" class="hero-image" />
-            <div class="hero-overlay">
-                <h1 class="hero-title">Precision Engineering, Race-Winning Insights</h1>
-                <p class="hero-desc">Dive into the world of motorsports analysis and technology. Explore in-depth race analysis, vehicle dynamics, and the latest innovations shaping the future of racing.</p>
-                <a href="/prediction">Explore</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Latest Analysis -->
-    <section class="section">
-        <h2 class="section-title">Latest Analysis</h2>
-        <div class="card-row">
-            <div class="card">
-                <h3 class="card-title">Decoding the Grand Prix: A Deep Dive into Race Strategy</h3>
-                <p class="card-desc">An in-depth analysis of the latest Grand Prix, examining key strategic decisions, driver performance, and technological factors that influenced the outcome.</p>
-                <a href="/analysis" class="card-link">Read More</a>
-            </div>
-            <div class="card-img">
-                <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80" alt="F1 car on track" />
-            </div>
-        </div>
-    </section>
-
-    <!-- Data & Tech -->
-    <section class="section">
-        <h2 class="section-title">Data & Tech</h2>
-        <div class="card-row">
-            <div class="card card-img-small">
-                <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80" alt="Aerodynamics visualization" />
-                <div style="padding: 1.1rem;">
-                    <h3 class="card-title">Aerodynamic Efficiency: Visualizing Vehicle Dynamics</h3>
-                    <p class="card-desc">Interactive visualizations of aerodynamic data, showcasing the impact of design changes on vehicle performance.</p>
+  <body>
+  <div class="relative flex size-full min-h-screen flex-col bg-[#18181c] dark group/design-root overflow-x-hidden" style='font-family: "Spline Sans", "Noto Sans", sans-serif;'>
+      <div class="layout-container flex h-full grow flex-col">
+        <div class="px-40 flex flex-1 justify-center py-5">
+          <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+            <div class="@@container">
+              <div class="@@[480px]:p-4">
+                <div
+                  class="flex min-h-[480px] flex-col gap-6 bg-cover bg-center bg-no-repeat @@[480px]:gap-8 @@[480px]:rounded-lg items-center justify-center p-4"
+                  style='background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("https://images.pexels.com/photos/13641535/pexels-photo-13641535.jpeg");'
+                >
+                  <div class="flex flex-col gap-2 text-center">
+                    <h1
+                      class="text-white text-4xl font-black leading-tight tracking-[-0.033em] @@[480px]:text-5xl @@[480px]:font-black @@[480px]:leading-tight @@[480px]:tracking-[-0.033em]"
+                    >
+                      Welcome to Race Insights
+                    </h1>
+                    <h2 class="text-white text-sm font-normal leading-normal @@[480px]:text-base @@[480px]:font-normal @@[480px]:leading-normal">
+                      Your go-to platform for Formula 1 race strategy prediction. Dive into the world of high-speed racing and strategic decision-making.
+                    </h2>
+                  </div>
+                  <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 @@[480px]:h-12 @@[480px]:px-5 bg-[#3d99f5] text-white text-sm font-bold leading-normal tracking-[0.015em] @@[480px]:text-base @@[480px]:font-bold @@[480px]:leading-normal @@[480px]:tracking-[0.015em]"
+                    @onclick="NavigateToStrategy"
+                  >
+                    <span class="truncate">Get Started</span>
+                  </button>
                 </div>
+              </div>
             </div>
-            <div class="card card-img-small">
-                <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" alt="Telemetry data" />
-                <div style="padding: 1.1rem;">
-                    <h3 class="card-title">Telemetry Analysis: Unlocking Performance Secrets</h3>
-                    <p class="card-desc">Explore real-time telemetry data from race cars, revealing insights into driver behavior and vehicle dynamics.</p>
+            <h2 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Explore Our Features</h2>
+            <div class="p-4">
+              <div class="flex items-stretch justify-between gap-4 rounded-lg bg-[#1b2127] p-4 shadow-[0_0_4px_rgba(0,0,0,0.1)]">
+                <div class="flex flex-[2_2_0px] flex-col gap-4">
+                  <div class="flex flex-col gap-1">
+                    <p class="text-[#9cabba] text-sm font-normal leading-normal">Strategy Prediction</p>
+                    <p class="text-white text-base font-bold leading-tight">Predict the Race Strategy</p>
+                    <p class="text-[#9cabba] text-sm font-normal leading-normal">
+                      Use our advanced tools to predict the race strategy for upcoming Formula 1 races. Analyze track conditions, weather forecasts, and historical data to make
+                      informed predictions.
+                    </p>
+                  </div>
+                  <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 flex-row-reverse bg-[#283039] text-white text-sm font-medium leading-normal w-fit"
+                    @onclick="NavigateToPrediction"
+                  >
+                    <span class="truncate">Predict Now</span>
+                  </button>
                 </div>
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg flex-1"
+                  style='background-image: url("https://images.pexels.com/photos/14681398/pexels-photo-14681398.jpeg");'
+                ></div>
+              </div>
             </div>
+            <div class="p-4">
+              <div class="flex items-stretch justify-between gap-4 rounded-lg bg-[#1b2127] p-4 shadow-[0_0_4px_rgba(0,0,0,0.1)]">
+                <div class="flex flex-[2_2_0px] flex-col gap-4">
+                  <div class="flex flex-col gap-1">
+                    <p class="text-[#9cabba] text-sm font-normal leading-normal">Next Grand Prix</p>
+                    <p class="text-white text-base font-bold leading-tight">Stay Updated on the Next Grand Prix</p>
+                    <p class="text-[#9cabba] text-sm font-normal leading-normal">
+                      Get the latest information on the next Formula 1 Grand Prix, including race schedules, track details, and weather updates. Stay ahead of the game with
+                      real-time information.
+                    </p>
+                  </div>
+                  <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 flex-row-reverse bg-[#283039] text-white text-sm font-medium leading-normal w-fit"
+                     @onclick="NavigateToNextGP"
+                  >
+                    <span class="truncate">View Next Grand Prix</span>
+                  </button>
+                </div>
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg flex-1"
+                  style='background-image: url("https://images.pexels.com/photos/29817501/pexels-photo-29817501.jpeg");'
+                ></div>
+              </div>
+            </div>
+            <div class="p-4">
+              <div class="flex items-stretch justify-between gap-4 rounded-lg bg-[#1b2127] p-4 shadow-[0_0_4px_rgba(0,0,0,0.1)]">
+                <div class="flex flex-[2_2_0px] flex-col gap-4">
+                  <div class="flex flex-col gap-1">
+                    <p class="text-[#9cabba] text-sm font-normal leading-normal">Race Strategy</p>
+                    <p class="text-white text-base font-bold leading-tight">Analyze Race Strategies</p>
+                    <p class="text-[#9cabba] text-sm font-normal leading-normal">
+                      Explore detailed race strategies from past Formula 1 races. Learn from the best teams and drivers by analyzing their strategic decisions and outcomes.
+                    </p>
+                  </div>
+                  <button
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-8 px-4 flex-row-reverse bg-[#283039] text-white text-sm font-medium leading-normal w-fit"
+                     @onclick="NavigateToStrategy"
+                  >
+                    <span class="truncate">Analyze Strategies</span>
+                  </button>
+                </div>
+                <div
+                  class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg flex-1"
+                  style='background-image: url("https://images.pexels.com/photos/11149058/pexels-photo-11149058.jpeg");'
+                ></div>
+              </div>
+            </div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </body>
 
-    <!-- Innovation -->
-    <section class="section">
-        <h2 class="section-title">Innovation</h2>
-        <div class="card-row">
-            <div class="card" style="display: flex; flex-direction: column; justify-content: center;">
-                <h3 class="card-title">The Future of Motorsports: Sustainable Technologies and Alternative Fuels</h3>
-                <p class="card-desc">A look at the cutting-edge technologies and sustainable solutions driving the next generation of motorsports, from electric racing to alternative fuel development.</p>
-                <a href="/innovation" class="card-link" style="max-width: 120px;">Learn More</a>
-            </div>
-            <div class="card-img">
-                <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=400&q=80" alt="Futuristic race car" />
-            </div>
-        </div>
-    </section>
-</div>
+@code{
+    void NavigateToStrategy() => NavManager.NavigateTo("/Strategy");
+    void NavigateToPrediction() => NavManager.NavigateTo("/prediction");
+    void NavigateToNextGP() => NavManager.NavigateTo("/UpcomingGrandPrix");
+}
