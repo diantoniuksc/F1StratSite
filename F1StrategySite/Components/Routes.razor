@@ -1,11 +1,13 @@
-﻿<Router AppAssembly="typeof(Program).Assembly">
+﻿@using F1StrategySite.Components
+
+<Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)" />
+        <RouteView RouteData="routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
         <FocusOnNavigate RouteData="routeData" Selector="h1" />
     </Found>
     <NotFound>
         <LayoutView>
-            <p>Sorry, there's nothing at this address.</p>
+            <RedirectTo To="/Error?StatusCode=404" />
         </LayoutView>
     </NotFound>
 </Router>

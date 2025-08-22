@@ -1,6 +1,8 @@
 ﻿@page "/"
 @inject NavigationManager NavManager
 
+<script src="/js/rateLimiter.js"></script>
+<script>rateLimitPageLoads(15, 60000, 'home:loads');</script>
 
   <body>
   <div class="relative flex size-full min-h-screen flex-col bg-[#18181c] dark group/design-root overflow-x-hidden" style='font-family: "Spline Sans", "Noto Sans", sans-serif;'>

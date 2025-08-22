@@ -1,0 +1,41 @@
+﻿@page "/Error"
+@inject NavigationManager NavManager
+
+@code {
+    [Parameter]
+    public int? StatusCode { get; set; } = 500;
+
+    protected override void OnInitialized()
+    {
+        var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
+        var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        if (int.TryParse(query["StatusCode"], out var code))
+        {
+            StatusCode = code;
+        }
+    }
+}
+
+<div class="relative flex min-h-screen flex-col bg-[#18181c] overflow-x-hidden" style='font-family: "Spline Sans", "Noto Sans", sans-serif;'>
+    <div class="layout-container flex h-full grow flex-col justify-center items-center">
+        <!-- Text container with background image -->
+        <div 
+            class="w-full max-w-[960px] p-8 rounded-lg bg-cover bg-center flex flex-col items-center"
+        >
+            <h1 class="text-white tracking-light text-[32px] font-bold leading-tight px-4 text-center pb-3 pt-6">
+                @StatusCode
+            </h1>
+            <p class="text-white text-base font-normal leading-normal pb-3 pt-1 px-4 text-center">
+                The page you are looking for does not exist or something went wrong. Please check the URL or return to the homepage.
+            </p>
+            <div class="flex px-4 py-3 justify-center">
+                <NavLink 
+                    class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#3d99f5] text-white text-sm font-bold leading-normal tracking-[0.015em]" 
+                    href="/"
+                >
+                    Go to Homepage
+                </NavLink>
+            </div>
+        </div>
+    </div>
+</div>

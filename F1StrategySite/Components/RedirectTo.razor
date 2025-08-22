@@ -1,0 +1,14 @@
+@inject NavigationManager Nav
+
+@code {
+    [Parameter] public string? To { get; set; }
+    [Parameter] public bool Replace { get; set; } = true;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender && !string.IsNullOrWhiteSpace(To))
+        {
+            Nav.NavigateTo(To!, replace: Replace);
+        }
+    }
+}
