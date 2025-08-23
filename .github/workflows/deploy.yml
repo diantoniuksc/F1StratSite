@@ -1,0 +1,67 @@
+name: Build and deploy ASP.NET Core app to Azure Web App - pitdatainsights
+
+on:
+  push:
+    branches:
+      - main
+      - production
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore
+        run: dotnet restore ./F1StrategySite/F1StrategySite.sln
+
+      - name: Build
+        run: dotnet build ./F1StrategySite/F1StrategySite.sln --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish ./F1StrategySite/F1StrategySite.csproj -c Release -o ${{ github.workspace }}/published --no-build
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: webapp
+          path: ${{ github.workspace }}/published
+
+  deploy:
+  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: webapp
+          path: ./published
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_16A2088F971A4949B70A31E9BA46410A }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_D76D45853E70469C8BE69D3714CC60D8 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_6B44DB3908E94E0EB8A9094984146C46 }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'pitdatainsights'
+          slot-name: 'Production'
+          package: './published'
