@@ -2,12 +2,23 @@
 
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
-        <FocusOnNavigate RouteData="routeData" Selector="h1" />
+        <ErrorBoundary @key="routeData.PageType">
+            <ChildContent>
+                <RouteView RouteData="routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
+                <FocusOnNavigate RouteData="routeData" Selector="h1" />
+            </ChildContent>
+            <ErrorContent>
+                <!-- Render error content directly to ensure SSR shows UI without relying on client-side redirects -->
+                <LayoutView Layout="@typeof(Layout.MainLayout)">
+                    <Error StatusCode="500" />
+                </LayoutView>
+            </ErrorContent>
+        </ErrorBoundary>
     </Found>
     <NotFound>
-        <LayoutView>
-            <RedirectTo To="/Error?StatusCode=404" />
+        <!-- Show 404 content directly (no redirect) so SSR displays immediately -->
+        <LayoutView Layout="@typeof(Layout.MainLayout)">
+            <Error StatusCode="404" />
         </LayoutView>
     </NotFound>
 </Router>

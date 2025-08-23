@@ -10,7 +10,14 @@ builder.WebHost.UseStaticWebAssets();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+    .AddInteractiveServerComponents(options =>
+    {
+        // Surface detailed circuit errors to the browser when developing
+        if (builder.Environment.IsDevelopment())
+        {
+            options.DetailedErrors = true;
+        }
+    });
 builder.Services.AddControllers();
 builder.Services.AddRazorPages(options =>
 {

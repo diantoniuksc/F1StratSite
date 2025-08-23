@@ -9,7 +9,9 @@
     {
         var uri = NavManager.ToAbsoluteUri(NavManager.Uri);
         var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
-        if (int.TryParse(query["StatusCode"], out var code))
+        // Support both "StatusCode" (used by internal redirects) and "code" (used by UseStatusCodePagesWithReExecute)
+        var statusFromQuery = query["StatusCode"] ?? query["code"];
+        if (int.TryParse(statusFromQuery, out var code))
         {
             StatusCode = code;
         }
