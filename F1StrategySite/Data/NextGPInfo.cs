@@ -35,7 +35,6 @@ namespace F1StrategySite.Data
 
             var result = await client.SearchPhotosAsync(GrandPrix);
             var photo = result.photos.FirstOrDefault();
-            Console.WriteLine(photo.source.original);
 
             return photo.source.original;
         }
