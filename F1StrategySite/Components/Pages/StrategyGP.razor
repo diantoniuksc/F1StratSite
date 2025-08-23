@@ -45,6 +45,23 @@
             font-family: 'Roboto Mono', monospace;
         }
 
+        /* Add a subtle separator so two stints with the same compound don't visually merge */
+        .tyre-segment::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px; /* small gray marker */
+            background-color: rgb(107, 34, 34);
+            opacity: 0.85;
+            pointer-events: none;
+        }
+
+        .tyre-segment:first-child::before {
+            display: none;
+        }
+
     </style>
 </head>
 <div class="strategy-root p-6 md:p-10 min-h-screen">
@@ -78,7 +95,7 @@
 
 @code {
     [Parameter]
-    public string GrandPrixName { get; set; }
+    public string GrandPrixName { get; set; } = string.Empty;
 
     private int totalLaps;
     protected int Year { get; set; } = 2025;

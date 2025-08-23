@@ -57,3 +57,19 @@
     font-family: 'Inter', sans-serif;
     font-weight: 700;
 }
+
+.tyre-segment::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px; /* small gray marker */
+    background-color: rgb(107, 34, 34);
+    opacity: 0.85;
+    pointer-events: none;
+}
+
+.tyre-segment:first-child::before {
+    display: none;
+}
