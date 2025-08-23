@@ -9,60 +9,8 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Race Strategy Overview</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
-    <style type="text/tailwindcss">
-        :root {
-            --primary-color: #EF4444;
-            --background-dark: #18181c;
-            --background-light: #141414;
-            --border-color: #262626;
-            --text-primary: #E5E7EB;
-            --text-secondary: #888888;
-            --soft-tyre: #EF4444;
-            --medium-tyre: #F59E0B;
-            --hard-tyre: #E5E7EB;
-        }
-
-        .bg-card {
-            background-color: var(--background-light);
-            border-radius: 0.5rem;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-        }
-
-        .tyre-segment {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 0.5rem;
-            font-weight: 500;
-            font-size: 0.75rem;
-            color: var(--background-dark);
-            position: relative;
-            transition: width 0.5s ease-in-out;
-            font-family: 'Roboto Mono', monospace;
-        }
-
-        /* Add a subtle separator so two stints with the same compound don't visually merge */
-        .tyre-segment::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 2px; /* small gray marker */
-            background-color: rgb(107, 34, 34);
-            opacity: 0.85;
-            pointer-events: none;
-        }
-
-        .tyre-segment:first-child::before {
-            display: none;
-        }
-
-    </style>
+    
 </head>
 <div class="strategy-root p-6 md:p-10 min-h-screen">
     <div class="max-w-screen-2xl mx-auto">

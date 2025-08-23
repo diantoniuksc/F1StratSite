@@ -1,0 +1,28 @@
+# Normalize line endings for text automatically
+* text=auto
+
+# Keep CSS/JS and web assets with LF in repo but let Git handle conversion on checkout
+*.css text eol=lf
+*.js  text eol=lf
+*.ts  text eol=lf
+*.json text eol=lf
+*.md  text eol=lf
+*.razor text eol=lf
+*.cshtml text eol=lf
+*.html text eol=lf
+
+# Windows-specific scripts can be CRLF
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.svg -text
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.eot binary
+*.ttf binary
