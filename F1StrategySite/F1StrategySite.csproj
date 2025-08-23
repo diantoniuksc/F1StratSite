@@ -24,4 +24,15 @@
   <ItemGroup>
     <Folder Include="wwwroot\Images\" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Docs\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Target Name="NpmInstall" BeforeTargets="Publish">
+    <Exec Command="npm ci" WorkingDirectory="$(ProjectDir)" />
+  </Target>
+  <Target Name="TailwindBuild" BeforeTargets="Publish" DependsOnTargets="NpmInstall">
+    <Exec Command="npm run build:css" WorkingDirectory="$(ProjectDir)" />
+  </Target>
 </Project>

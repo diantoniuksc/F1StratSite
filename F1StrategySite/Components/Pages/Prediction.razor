@@ -179,10 +179,8 @@
 
     private async void HandleSubmit()
     {
-        Console.WriteLine("Form Submitted!");
         if (!isValid)
         {
-            Console.WriteLine("Invalid input. Prediction not run.");
             return;
         }
 
@@ -208,7 +206,6 @@
         try
         {
             Input!.Race_length = await ConvertCircuitNameToLength();
-            Console.WriteLine($"Driver: {Input!.Driver_id}, Compound: {Input!.Compound}, Circuit: {Circuit}, Circuit Length: {Input!.Race_length}");
             Output = MLModel1.Predict(Input!);
             if (Circuit != null)
             {
@@ -222,7 +219,6 @@
             if (ex.Message.Contains("rate limit", StringComparison.OrdinalIgnoreCase) || ex is InvalidOperationException)
             {
                 RateLimitExceeded = true;
-                Console.WriteLine("Exeeded!");
             }
         }
         IsLoading = false;
