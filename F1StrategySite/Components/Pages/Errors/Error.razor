@@ -30,6 +30,13 @@
             <p class="text-white text-base font-normal leading-normal pb-3 pt-1 px-4 text-center">
                 The page you are looking for does not exist or something went wrong. Please check the URL or return to the homepage.
             </p>
+            @if (F1StrategySite.Components.Pages.StrategyHome.LastErrorMessage != null)
+            {
+                <div class="bg-red-900 text-red-200 p-4 mt-4 rounded-lg break-words max-w-full">
+                    <strong>Error details:</strong>
+                    <pre>@F1StrategySite.Components.Pages.StrategyHome.LastErrorMessage</pre>
+                </div>
+            }
             <div class="flex px-4 py-3 justify-center">
                 <NavLink 
                     class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-[#3d99f5] text-white text-sm font-bold leading-normal tracking-[0.015em]" 

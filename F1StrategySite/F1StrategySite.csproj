@@ -28,6 +28,9 @@
     <Content Include="Docs\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="MLModel\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Target Name="NpmInstall" BeforeTargets="Publish">
     <Exec Command="npm ci" WorkingDirectory="$(ProjectDir)" />

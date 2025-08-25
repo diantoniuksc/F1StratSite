@@ -20,7 +20,7 @@ namespace F1StrategySite.MLModel
             [Required]
             [LoadColumn(0)]
             [ColumnName(@"driver_id")]
-            public string Driver_id { get; set; }
+            public string? Driver_id { get; set; }
 
             [Required]
             [LoadColumn(1)]
@@ -35,7 +35,7 @@ namespace F1StrategySite.MLModel
             [Required]
             [LoadColumn(3)]
             [ColumnName(@"compound")]
-            public string Compound { get; set; }
+            public string? Compound { get; set; }
 
             [Required]
             [LoadColumn(4)]
@@ -57,7 +57,7 @@ namespace F1StrategySite.MLModel
         public class ModelOutput
         {
             [ColumnName(@"driver_id")]
-            public float[] Driver_id { get; set; }
+            public float[]? Driver_id { get; set; }
 
             [ColumnName(@"race_length")]
             public float Race_length { get; set; }
@@ -66,7 +66,7 @@ namespace F1StrategySite.MLModel
             public float Year { get; set; }
 
             [ColumnName(@"compound")]
-            public float[] Compound { get; set; }
+            public float[]? Compound { get; set; }
 
             [ColumnName(@"stint_start_lap")]
             public float Stint_start_lap { get; set; }
@@ -75,7 +75,7 @@ namespace F1StrategySite.MLModel
             public float Tyre_life { get; set; }
 
             [ColumnName(@"Features")]
-            public float[] Features { get; set; }
+            public float[]? Features { get; set; }
 
             [ColumnName(@"Score")]
             public float Score { get; set; }
@@ -84,7 +84,7 @@ namespace F1StrategySite.MLModel
 
         #endregion
 
-        private static string MLNetModelPath = Path.GetFullPath(Path.Combine("MLModel", "MLModel1.mlnet"));
+    private static string MLNetModelPath = Path.Combine(AppContext.BaseDirectory, "MLModel", "MLModel1.mlnet");
 
         public static readonly Lazy<PredictionEngine<ModelInput, ModelOutput>> PredictEngine = new Lazy<PredictionEngine<ModelInput, ModelOutput>>(() => CreatePredictEngine(), true);
 

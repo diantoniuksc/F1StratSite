@@ -2,6 +2,7 @@ using F1StrategySite.Components;
 using F1StrategySite.Data;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +51,43 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 app.UseRateLimiter();
+
+// Lightweight health and diagnostics endpoints
+app.MapGet("/health", () => Results.Ok(new { status = "ok", env = app.Environment.EnvironmentName }))
+   .WithName("Health");
+app.MapGet("/diag/paths", () => Results.Ok(new
+{
+    Base = AppContext.BaseDirectory,
+    Docs = System.IO.Path.Combine(AppContext.BaseDirectory, "Docs"),
+    Model = System.IO.Path.Combine(AppContext.BaseDirectory, "MLModel", "MLModel1.mlnet")
+})).WithName("DiagPaths");
+
+app.MapGet("/diag/check", async () =>
+{
+    var docsDir = Path.Combine(AppContext.BaseDirectory, "Docs");
+    var modelPath = Path.Combine(AppContext.BaseDirectory, "MLModel", "MLModel1.mlnet");
+    var exists = new
+    {
+        DocsDirExists = Directory.Exists(docsDir),
+        CircuitFileExists = File.Exists(Path.Combine(docsDir, "circut_length.csv")),
+        GpLapsExists = File.Exists(Path.Combine(docsDir, "gps_laps.csv")),
+        CalendarExists = File.Exists(Path.Combine(docsDir, "grand_prix_calendar.csv")),
+        ModelExists = File.Exists(modelPath)
+    };
+
+    float? spaLen = null;
+    string? loadError = null;
+    try
+    {
+        spaLen = await CircutInfo.GetCircuitLengthAsync("Belgian Grand Prix");
+    }
+    catch (Exception ex)
+    {
+        loadError = ex.Message;
+    }
+
+    return Results.Ok(new { exists, spaLen, loadError });
+}).WithName("DiagCheck");
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

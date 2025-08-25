@@ -66,6 +66,7 @@
 </div> 
 
 @code {
+    public static string? LastErrorMessage;
     private List<RaceInfo> Races { get; set; } = new();
     private string nameNormalized;
 
@@ -88,9 +89,16 @@
 
     private async Task PreloadData()
     {
-        var gpStrategies = new Strategies("Bahrain Grand Prix");
-        var StrategiesArr = await gpStrategies.GetStrategiesAsync();
-        var stintLifes = await Strategies.LoadAllStintLivesAsync(StrategiesArr, 2025);
+        try
+        {
+            var gpStrategies = new Strategies("Bahrain Grand Prix");
+            var StrategiesArr = await gpStrategies.GetStrategiesAsync();
+            var stintLifes = await Strategies.LoadAllStintLivesAsync(StrategiesArr, 2025);
+        }
+        catch (Exception ex)
+        {
+            LastErrorMessage = ex.ToString();
+        }
     }
 
     private async Task LoadSchedule()

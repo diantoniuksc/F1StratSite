@@ -1,16 +1,15 @@
 ﻿using F1StrategySite.MLModel;
 using System.Collections.Concurrent;
-using System.IO;
 
 namespace F1StrategySite.Data
 {
-    public class Strategies(string name, string path = @"Docs\strategies_22-25.csv")
+    public class Strategies(string name, string path = null)
     {
     public string GPName { get; set; } = name;
     public string? Strategy { get; set; }
     public int StrategyFrequencyInt { get; set; }
     public string? StrategyFrequencyText { get; set; }
-    public string FilePath { get; set; } = path;
+    public string FilePath { get; set; } = path ?? Path.Combine(AppContext.BaseDirectory, "Docs", "strategies_22-25.csv");
     private static string? StrategiesData { get; set; }
 
     // ML prediction cache

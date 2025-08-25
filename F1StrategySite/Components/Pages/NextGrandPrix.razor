@@ -2,6 +2,8 @@
 @using F1StrategySite.Data
 @using F1StrategySite.Components.Pages.AdditionalGPElements
 @inject PersistentComponentState ApplicationState
+@inject IJSRuntime JS
+@inject ILogger<NextGrandPrix> Logger
 
 <script src="/js/rateLimiter.js"></script>
 <script>rateLimitPageLoads(15, 60000, 'nextgp:loads');</script>
@@ -17,6 +19,7 @@
 
     <title>Stitch Design</title>
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+    <script src="/js/timezone.js"></script>
 
 </head>
 
@@ -60,11 +63,22 @@ else
                         </div>
                         <div class="col-span-2 grid grid-cols-subgrid border-t border-t-[#3b4554] py-5">
                             <p class="text-[#9da8b9] text-sm font-normal leading-normal">Date and Time</p>
-                            <p class="text-white text-sm font-normal leading-normal">@RaceDateTime.ToString("dd-MM-yyyy HH:mm:ss")</p>
+                            <div class="text-white text-sm font-normal leading-normal">
+                                @{ /*var localTz = GetPolandTimeZone();
+                                   var localTime = TimeZoneInfo.ConvertTimeFromUtc(RaceDateTime, localTz);
+                                   var isoUtc = RaceDateTime.ToString("yyyy-MM-ddTHH:mm:ssZ");*/
+                                }
+                                <!--    <div>Poland: @localTime.ToString("dd-MM-yyyy HH:mm:ss")</div>-->
+                                <div><span id="race-local"></span></div>
+                            </div>
                         </div>
                     </div>
 
-                    <CountdownRaceWeek TargetDateTime=@(new DateTime(RaceWeek, new TimeOnly(0,0,0))) />
+                              @{ var warsaw = GetPolandTimeZone();
+                                  var localMidnight = RaceWeek.ToDateTime(new TimeOnly(0,0,0));
+                                  var targetUtc = TimeZoneInfo.ConvertTimeToUtc(localMidnight, warsaw);
+                          }
+                          <CountdownRaceWeek TargetDateTime=@targetUtc />
 
                     <h2 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Circuit Information</h2>
                     <div class="flex px-4 py-3">
@@ -94,6 +108,13 @@ else
 
 @code
 {
+    private static TimeZoneInfo GetPolandTimeZone()
+    {
+        // Try IANA (Linux/containers) then Windows ID (Windows dev)
+        try { return TimeZoneInfo.FindSystemTimeZoneById("Europe/Warsaw"); } catch { }
+        try { return TimeZoneInfo.FindSystemTimeZoneById("Central European Standard Time"); } catch { }
+        return TimeZoneInfo.Utc; // fallback
+    }
     public string? GrandPrixName { get; set; }
     private string? Photo { get; set; }
     public string? Circut { get; set; }
@@ -107,6 +128,7 @@ else
     public int TotalLaps { get; private set; }
 
     private bool IsLoading { get; set; } = true;
+    private bool _userLocalSet = false;
 
     private PersistingComponentStateSubscription? _subscription;
 
@@ -144,26 +166,60 @@ else
         }
         else
         {
-            NextGPInfo nextGp = new(DateTime.Now);
-            GrandPrixName = nextGp.GetNextGP();
-            Photo = await nextGp.GetPhotoUrl();
+            try
+            {
+                NextGPInfo nextGp = new(DateTime.Now);
+                GrandPrixName = nextGp.GetNextGP();
+                Photo = await nextGp.GetPhotoUrl();
 
-            GPInfo info = new(GrandPrixName, 2025);
-            Circut = await info.GetCircuitName();
-            Location = await info.GetLocation();
-            RaceDateTime = await info.GetRaceDateTime();
-            var coords = await info.GetCircutCoordinatesAsync();
-            Latitude = Convert.ToDouble(coords.Item1);
-            Longtitude = Convert.ToDouble(coords.Item2);
-            RaceWeek = await info.GetRaceWeekStartDateAsync();
-            TotalLaps = info.GetTotalLaps();
+                GPInfo info = new(GrandPrixName ?? string.Empty, DateTime.Now.Year);
+                Circut = await info.GetCircuitName();
+                Location = await info.GetLocation();
+                RaceDateTime = await info.GetRaceDateTime();
+                var coords = await info.GetCircutCoordinatesAsync();
+                Latitude = Convert.ToDouble(coords.Item1);
+                Longtitude = Convert.ToDouble(coords.Item2);
+                RaceWeek = await info.GetRaceWeekStartDateAsync();
+                TotalLaps = info.GetTotalLaps();
 
-            CircuitLength = await CircutInfo.GetCircuitLengthAsync(GrandPrixName);
+                CircuitLength = await CircutInfo.GetCircuitLengthAsync(GrandPrixName ?? string.Empty);
 
-            RaceDistance = TotalLaps * CircuitLength;
+                RaceDistance = TotalLaps * CircuitLength;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to load Next GP info");
+                // Minimal safe defaults to render page
+                GrandPrixName = GrandPrixName ?? "Upcoming Grand Prix";
+                Photo = Photo ?? "https://images.pexels.com/photos/31204633/pexels-photo-31204633.jpeg";
+                Circut = Circut ?? "Unknown";
+                Location = Location ?? "";
+                RaceDateTime = RaceDateTime == default ? DateTime.UtcNow : RaceDateTime;
+                Latitude = double.IsNaN(Latitude) || Latitude == 0 ? 0 : Latitude;
+                Longtitude = double.IsNaN(Longtitude) || Longtitude == 0 ? 0 : Longtitude;
+                RaceWeek = RaceWeek == default ? DateOnly.FromDateTime(RaceDateTime) : RaceWeek;
+                TotalLaps = TotalLaps == 0 ? 1 : TotalLaps;
+                CircuitLength = CircuitLength == 0 ? 1 : CircuitLength;
+                RaceDistance = TotalLaps * CircuitLength;
+            }
         }
 
         IsLoading = false;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        // Populate user-local time after data loads and JS is available
+        if (!IsLoading && !_userLocalSet)
+        {
+            try
+            {
+                var isoUtc = RaceDateTime.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                await JS.InvokeVoidAsync("setLocalTime", "race-local", isoUtc);
+                _userLocalSet = true;
+            }
+            catch { /* ignore if JS not ready; will retry next render */ }
+        }
     }
 
     private Task Persist()

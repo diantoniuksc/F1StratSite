@@ -5,7 +5,7 @@ namespace F1StrategySite.Data
 {
     public class CircuitInfoRecord
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public float Length { get; set; }
     }
 
@@ -20,13 +20,13 @@ namespace F1StrategySite.Data
 
     public static class CircutInfo
     {
-        public static string Name { get; set; }
-        public static float Length { get; set; }
-        private static Dictionary<string, float> CircuitLengths { get; set; }
+    public static string? Name { get; set; }
+    public static float Length { get; set; }
+    private static Dictionary<string, float>? CircuitLengths { get; set; }
 
-        private const string filePath = @"Docs\circut_length.csv";
+        private static readonly string filePath = Path.Combine(AppContext.BaseDirectory, "Docs", "circut_length.csv");
 
-        private static async Task<Dictionary<string, float>> LoadCircuitLengths(string filePath)
+    private static async Task<Dictionary<string, float>> LoadCircuitLengths(string filePath)
         {
             if (CircuitLengths != null)
             {
@@ -47,7 +47,8 @@ namespace F1StrategySite.Data
             var circuits = await Task.Run(() => csv.GetRecords<CircuitInfoRecord>().ToList());
             CircuitLengths = circuits.ToDictionary(
                 c => c.Name.Trim(),
-                c => c.Length
+                c => c.Length,
+                StringComparer.OrdinalIgnoreCase
             );
 
             return CircuitLengths;
@@ -58,7 +59,7 @@ namespace F1StrategySite.Data
             if (CircuitLengths == null)
                 await LoadCircuitLengths(filePath);
             var key = name.Trim();
-            if (CircuitLengths.TryGetValue(key, out var length))
+            if (CircuitLengths!.TryGetValue(key, out var length))
             {
                 return length;
             }

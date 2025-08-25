@@ -6,19 +6,18 @@ using Microsoft.ML.Data;
 
 namespace F1StrategySite.Data
 {
-    public class GPInfo(string name, int year, string path = @"Docs\gps_laps.csv", string calPath = @"Docs\grand_prix_calendar.csv")
+    public class GPInfo(string name, int year, string? path = null, string? calPath = null)
     {
-        private static Dictionary<string, int> GpInfoDict { get; set; }
-        protected static Dictionary<DateTime, string> CalendarDict { get; set; }
+        private static Dictionary<string, int>? GpInfoDict { get; set; }
+        protected static Dictionary<DateTime, string>? CalendarDict { get; set; }
 
         private static readonly Dictionary<int, (string[] gpNames, string[] circuits)> ScheduleCache
             = [];
-
-        private string FilePath { get; set; } = path;
-        protected string CalendarPath { get; set; } = calPath;
+    private string FilePath { get; set; } = path ?? Path.Combine(AppContext.BaseDirectory, "Docs", "gps_laps.csv");
+    protected string CalendarPath { get; set; } = calPath ?? Path.Combine(AppContext.BaseDirectory, "Docs", "grand_prix_calendar.csv");
         public string GpName { get; private set; } = name;
         public int Year { get; private set; } = year;
-        private static string GpInfo { get; set; }
+    private static string? GpInfo { get; set; }
 
 
 
@@ -79,7 +78,11 @@ namespace F1StrategySite.Data
             if (GpInfoDict == null)
                 LoadGPInfo(FilePath);
 
-            return GpInfoDict[GpName];
+            if (GpInfoDict!.TryGetValue(GpName, out var laps))
+            {
+                return laps;
+            }
+            throw new KeyNotFoundException($"Grand Prix '{GpName}' not found in '{FilePath}'.");
         }
 
        /* public int GetGpNumber()
@@ -135,8 +138,9 @@ namespace F1StrategySite.Data
 
 
 
-        private static string FindByKey(string key)
+        private static string? FindByKey(string key)
         {
+            if (string.IsNullOrEmpty(GpInfo)) return null;
             int start = GpInfo.IndexOf(key);
             if (start == -1)
                 return null;
@@ -155,9 +159,9 @@ namespace F1StrategySite.Data
                 await GetGpInfoAsync();
 
             const string circutKey = "\"circuitName\":\"";
-            string circut = FindByKey(circutKey);
+            string? circut = FindByKey(circutKey);
 
-            return circut;
+            return circut ?? string.Empty;
 
         }
 
@@ -169,10 +173,10 @@ namespace F1StrategySite.Data
             const string keyCountry = "\"country\":\"";
             const string keyCity = "\"locality\":\"";
 
-            string country = FindByKey(keyCountry);
-            string city = FindByKey(keyCity);
+            string? country = FindByKey(keyCountry);
+            string? city = FindByKey(keyCity);
 
-            return city + ", " + country;
+            return $"{city ?? ""}{(string.IsNullOrEmpty(city) || string.IsNullOrEmpty(country) ? "" : ", ")}{country ?? ""}";
 
         }
 
@@ -185,20 +189,21 @@ namespace F1StrategySite.Data
             const string dateKey = "\"date\":\"";
             const string timeKey = "\"time\":\"";
 
-            string date = FindByKey(dateKey);
-            string time = FindByKey(timeKey);
+            string? date = FindByKey(dateKey);
+            string? time = FindByKey(timeKey);
 
             if (date == null || time == null)
                 throw new Exception("Could not find race date or time in JSON.");
 
-            // Remove trailing 'Z' if present
-            if (time.EndsWith('Z'))
-                time = time[..^1];
-
-            string dateTimeStr = $"{date} {time}";
-            if (DateTime.TryParse(dateTimeStr, out DateTime result))
-                return result;
-            throw new Exception($"Could not parse date/time: {dateTimeStr}");
+            // Compose ISO-8601 and parse as UTC (ergast returns UTC times with trailing 'Z')
+            string iso = $"{date}T{time}"; // e.g., 2025-09-14T13:00:00Z
+            if (DateTimeOffset.TryParse(iso, System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
+                out var dto))
+            {
+                return dto.UtcDateTime; // always UTC
+            }
+            throw new Exception($"Could not parse date/time: {iso}");
         }
 
         public async Task<(string, string)> GetCircutCoordinatesAsync()
@@ -206,10 +211,10 @@ namespace F1StrategySite.Data
             if (GpInfo == null)
                 await GetGpInfoAsync();
 
-            string lat = FindByKey("\"lat\":\"");
-            string lon = FindByKey("\"long\":\"");
+            string? lat = FindByKey("\"lat\":\"");
+            string? lon = FindByKey("\"long\":\"");
             
-            return (lat, lon);
+            return (lat ?? string.Empty, lon ?? string.Empty);
         }
 
         public async Task<DateOnly> GetRaceWeekStartDateAsync()
@@ -217,7 +222,10 @@ namespace F1StrategySite.Data
             if (GpInfo == null)
                 await GetGpInfoAsync();
 
-            DateOnly date = DateOnly.Parse(FindByKey("\"FirstPractice\":{\"date\":\""));
+            var fp = FindByKey("\"FirstPractice\":{\"date\":\"");
+            if (string.IsNullOrEmpty(fp))
+                throw new Exception("Could not find FirstPractice date.");
+            DateOnly date = DateOnly.Parse(fp);
 
             return date;
         }
@@ -282,12 +290,14 @@ namespace F1StrategySite.Data
             {
                 if (race.TryGetProperty("raceName", out var raceName))
                 {
-                    gpNames.Add(raceName.GetString());
+                    var val = raceName.GetString();
+                    if (!string.IsNullOrEmpty(val)) gpNames.Add(val);
                 }
 
                 if (race.TryGetProperty("Circuit", out var circuit) && circuit.TryGetProperty("circuitName", out var circuitName))
                 {
-                    circuits.Add(circuitName.GetString());
+                    var val = circuitName.GetString();
+                    if (!string.IsNullOrEmpty(val)) circuits.Add(val);
                 }
             }
             return (gpNames.ToArray(), circuits.ToArray());

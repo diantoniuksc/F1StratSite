@@ -1,6 +1,5 @@
 ﻿@page "/prediction"
 @using F1StrategySite.MLModel
-@using Data
 
 <script src="/js/rateLimiter.js"></script>
 <script>rateLimitPageLoads(15, 60000, 'prediction:loads');</script>
@@ -147,11 +146,12 @@
 </body>
 
 @code {
+    [Inject] private ILogger<Prediction>? Logger { get; set; }
     public MLModel1.ModelInput? Input { get; set; }
 
     public MLModel1.ModelOutput? Output { get; set; }
 
-    public string Circuit { get; set; }
+    public string? Circuit { get; set; }
 
     public int TotalLaps { get; set; }
     public float PercentOfGp { get; set; }
@@ -203,7 +203,7 @@
         }
         PredictionCount++;
 
-        try
+    try
         {
             Input!.Race_length = await ConvertCircuitNameToLength();
             Output = MLModel1.Predict(Input!);
@@ -220,6 +220,7 @@
             {
                 RateLimitExceeded = true;
             }
+            Logger?.LogError(ex, "Prediction failed for Driver {Driver} at circuit {Circuit}", Input?.Driver_id, Circuit);
         }
         IsLoading = false;
         StateHasChanged();

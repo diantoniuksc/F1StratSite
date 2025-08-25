@@ -40,8 +40,8 @@ Race Week Starts in
 
 @code
 {
-   [Parameter]
-    public DateTime TargetDateTime { get; set; } = DateTime.Now.AddDays(5).AddHours(12);
+    [Parameter]
+     public DateTime TargetDateTime { get; set; } = DateTime.UtcNow.AddDays(5).AddHours(12); // expected UTC
 
     private TimeSpan remainingTime = TimeSpan.Zero;
     private Timer? timer;
@@ -60,8 +60,8 @@ Race Week Starts in
 
     private void UpdateCountdown()
     {
-        var now = DateTime.Now;
-        remainingTime = TargetDateTime - now;
+    var now = DateTime.UtcNow;
+    remainingTime = TargetDateTime - now; // both UTC
         if (remainingTime <= TimeSpan.Zero)
         {
             remainingTime = TimeSpan.Zero;
