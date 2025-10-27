@@ -19,12 +19,12 @@ namespace F1Test
         [TestMethod]
         public async Task TestCircut()
         {
-            GPInfo info = new("Hungarian Grand Prix", 2024, 
+            GPInfo info = new("São Paulo Grand Prix", 2024, 
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"),
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\grand_prix_calendar.csv"));
             var circut = await info.GetCircuitName();
 
-            Assert.IsTrue(circut.Equals("Hungaroring"));
+            Assert.IsTrue(circut.Equals("Autódromo José Carlos Pace"));
         }
 
         [TestMethod]
@@ -79,6 +79,18 @@ namespace F1Test
 
             Assert.IsNotNull(scheduleGP);
             Assert.IsNotNull(scheduleCircuits);
+        }
+
+        [TestMethod]
+        public async Task TestRoundNum()
+        {
+            GPInfo info = new("São Paulo Grand Prix", 2025,
+               Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\gps_laps.csv"),
+               Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\..\F1StrategySite\Docs\grand_prix_calendar.csv"));
+
+            int round = await info.GetGpRoundAsync();
+
+            Assert.IsTrue(round == 21);
         }
     }
 }
