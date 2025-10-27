@@ -58,7 +58,10 @@ namespace F1StrategySite.Data
         {
             if (CircuitLengths == null)
                 await LoadCircuitLengths(filePath);
+
             var key = name.Trim();
+            if (name == "Sao Paulo Grand Prix")
+                key = "São Paulo Grand Prix";
             if (CircuitLengths!.TryGetValue(key, out var length))
             {
                 return length;

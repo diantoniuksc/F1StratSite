@@ -13,11 +13,11 @@ namespace F1StrategySite.Data
 
         private static readonly Dictionary<int, (string[] gpNames, string[] circuits)> ScheduleCache
             = [];
-    private string FilePath { get; set; } = path ?? Path.Combine(AppContext.BaseDirectory, "Docs", "gps_laps.csv");
-    protected string CalendarPath { get; set; } = calPath ?? Path.Combine(AppContext.BaseDirectory, "Docs", "grand_prix_calendar.csv");
+        private string FilePath { get; set; } = path ?? Path.Combine(AppContext.BaseDirectory, "Docs", "gps_laps.csv");
+        protected string CalendarPath { get; set; } = calPath ?? Path.Combine(AppContext.BaseDirectory, "Docs", "grand_prix_calendar.csv");
         public string GpName { get; private set; } = name;
         public int Year { get; private set; } = year;
-    private static string? GpInfo { get; set; }
+        private static string? GpInfo { get; set; }
 
 
 
