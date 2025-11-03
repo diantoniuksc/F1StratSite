@@ -40,14 +40,8 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach (var race in FilteredRaces)
                 {
-                    @if (race.GrandPrix == "São Paulo Grand Prix")
-                    {
-                        nameNormalized = "Sao Paulo Grand Prix";
-                    }
-                    else
-                    {
                         nameNormalized = race.GrandPrix;
-                    }
+
                             <a class="bg-card p-6 flex flex-col justify-between group cursor-pointer" 
                             href="@($"/Strategy/{nameNormalized}")">
                                 <div>
